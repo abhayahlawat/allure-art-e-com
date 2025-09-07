@@ -18,10 +18,10 @@ const WishlistPage: React.FC = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.6 }}
-      className="pt-24"
+      className="pt-24 min-h-screen bg-gradient-to-b from-white to-pastel-cream"
     >
       {/* Wishlist Content */}
-      <section className="py-20 bg-gradient-to-b from-white to-pastel-cream">
+      <section className="py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {wishlist.length === 0 ? (
             <motion.div
