@@ -1,0 +1,223 @@
+import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
+import { heroSlides } from '../data/heroSlides';
+
+const Hero: React.FC = () => {
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % heroSlides.length);
+    }, 6000);
+
+    return () => clearInterval(timer);
+  }, []);
+
+  const nextSlide = () => {
+    setCurrentSlide((prev) => (prev + 1) % heroSlides.length);
+  };
+
+  const prevSlide = () => {
+    setCurrentSlide((prev) => (prev - 1 + heroSlides.length) % heroSlides.length);
+  };
+
+  const currentSlideData = heroSlides[currentSlide];
+
+  return (
+    <section className="relative min-h-screen bg-gradient-to-br from-pastel-lavender via-pastel-cream to-pastel-blush overflow-hidden">
+      {/* Background Elements */}
+      <div className="absolute inset-0">
+        <motion.div
+          className="absolute top-10 left-10 w-20 h-20 bg-pastel-sage rounded-full opacity-30"
+          animate={{ 
+            x: [0, 30, 0],
+            y: [0, -20, 0],
+          }}
+          transition={{
+            duration: 8,
+            repeat: Infinity,
+            ease: "easeInOut"
+          }}
+        />
+        <motion.div
+          className="absolute top-1/3 right-20 w-16 h-16 bg-pastel-peach rounded-full opacity-40"
+          animate={{ 
+            x: [0, -25, 0],
+            y: [0, 15, 0],
+          }}
+          transition={{
+            duration: 6,
+            repeat: Infinity,
+            ease: "easeInOut"
+          }}
+        />
+        <motion.div
+          className="absolute bottom-1/4 left-1/4 w-12 h-12 bg-pastel-lilac rounded-full opacity-35"
+          animate={{ 
+            x: [0, 20, 0],
+            y: [0, -30, 0],
+          }}
+          transition={{
+            duration: 10,
+            repeat: Infinity,
+            ease: "easeInOut"
+          }}
+        />
+      </div>
+
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 min-h-screen flex items-center pt-32 md:pt-24">
+        <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center w-full">
+          {/* Content */}
+          <motion.div
+            className="space-y-8"
+            key={currentSlide}
+            initial={{ opacity: 0, x: -30 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+          >
+
+            <div className="space-y-6">
+              <motion.h2
+                className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-light text-slate-800 leading-tight"
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4, duration: 0.8 }}
+              >
+                {currentSlideData.title}
+                <br />
+                <span className="font-cursive text-slate-700">{currentSlideData.subtitle}</span>
+                <br />
+                Art
+              </motion.h2>
+
+              <motion.p
+                className="text-base sm:text-lg md:text-xl text-slate-600 max-w-lg leading-relaxed"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.6, duration: 0.6 }}
+              >
+                {currentSlideData.description}
+              </motion.p>
+            </div>
+
+            <motion.div
+              className="flex flex-col sm:flex-row gap-3 sm:gap-4"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.8, duration: 0.6 }}
+            >
+              <motion.div
+                whileHover={{ scale: 1.05, y: -2 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                <Link
+                  to="/gallery"
+                  className="group bg-slate-800 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-full font-medium flex items-center justify-center space-x-2 hover:bg-slate-700 transition-all duration-300 text-sm sm:text-base"
+                >
+                  <span>{currentSlideData.cta}</span>
+                  <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform duration-300" />
+                </Link>
+              </motion.div>
+
+              <motion.div
+                whileHover={{ scale: 1.05, y: -2 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                <Link
+                  to="/artists"
+                  className="px-6 sm:px-8 py-3 sm:py-4 rounded-full font-medium text-slate-700 border-2 border-slate-300 hover:border-slate-400 transition-all duration-300 block text-center text-sm sm:text-base"
+                >
+                  View Artists
+                </Link>
+              </motion.div>
+            </motion.div>
+          </motion.div>
+
+          {/* Featured Art Piece */}
+          <motion.div
+            className="relative"
+            key={`image-${currentSlide}`}
+            initial={{ opacity: 0, x: 30 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+          >
+            <div className="relative group">
+              <motion.div
+                className="absolute -inset-4 bg-gradient-to-r from-pastel-sage to-pastel-blush rounded-2xl opacity-30"
+                animate={{
+                  scale: [1, 1.02, 1],
+                }}
+                transition={{
+                  duration: 4,
+                  repeat: Infinity,
+                  ease: "easeInOut"
+                }}
+              />
+              
+              <motion.img
+                src={currentSlideData.image}
+                alt="Featured Artwork"
+                className="relative w-full max-w-xs sm:max-w-sm md:max-w-md mx-auto rounded-2xl shadow-2xl group-hover:shadow-3xl transition-all duration-500"
+                whileHover={{ scale: 1.02, rotate: 1 }}
+                transition={{ type: "spring", stiffness: 300, damping: 30 }}
+              />
+              
+              <motion.div
+                className="absolute bottom-4 left-4 right-4 bg-white/90 backdrop-blur-sm p-4 rounded-lg"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 1, duration: 0.6 }}
+              >
+                <h3 className="font-medium text-slate-800 mb-1 text-sm">Ethereal Dreams</h3>
+                <p className="text-slate-600 text-xs">Marina Celestine â€¢ â‚¹1,03,750</p>
+              </motion.div>
+            </div>
+
+            {/* Slider Controls */}
+            <div className="hidden sm:block absolute top-1/2 -translate-y-1/2 -left-4">
+              <motion.button
+                onClick={prevSlide}
+                className="bg-white/80 backdrop-blur-sm p-2 sm:p-3 rounded-full shadow-lg hover:bg-white transition-colors duration-300"
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <ChevronLeft size={16} className="text-slate-700" />
+              </motion.button>
+            </div>
+            
+            <div className="hidden sm:block absolute top-1/2 -translate-y-1/2 -right-4">
+              <motion.button
+                onClick={nextSlide}
+                className="bg-white/80 backdrop-blur-sm p-2 sm:p-3 rounded-full shadow-lg hover:bg-white transition-colors duration-300"
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <ChevronRight size={16} className="text-slate-700" />
+              </motion.button>
+            </div>
+          </motion.div>
+        </div>
+
+        {/* Slide Indicators */}
+        <div className="absolute bottom-8 sm:bottom-12 md:bottom-20 left-1/2 transform -translate-x-1/2 flex space-x-2 sm:space-x-3">
+          {heroSlides.map((_, index) => (
+            <motion.button
+              key={index}
+              onClick={() => setCurrentSlide(index)}
+              className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                index === currentSlide ? 'bg-slate-800' : 'bg-slate-400'
+              }`}
+              whileHover={{ scale: 1.2 }}
+              whileTap={{ scale: 0.9 }}
+            />
+          ))}
+        </div>
+      </div>
+
+    </section>
+  );
+};
+
+export default Hero;
