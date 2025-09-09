@@ -19,7 +19,7 @@ const Footer: React.FC = () => {
   ];
 
   return (
-    <footer className="bg-slate-900 text-white">
+    <footer className="bg-gradient-to-br from-pastel-blush via-pastel-rose to-pastel-lilac">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 sm:gap-12">
           {/* Brand */}
@@ -29,8 +29,8 @@ const Footer: React.FC = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <h3 className="text-2xl sm:text-3xl font-cursive text-white">Allure Art</h3>
-            <p className="text-gray-300 leading-relaxed text-sm sm:text-base">
+            <h3 className="text-2xl sm:text-3xl font-cursive text-slate-800">Allure Art</h3>
+            <p className="text-slate-700 leading-relaxed text-sm sm:text-base">
               Discover extraordinary art that transforms spaces and inspires souls. Curated with passion, delivered with care.
             </p>
             <div className="flex space-x-3 sm:space-x-4">
@@ -38,7 +38,7 @@ const Footer: React.FC = () => {
                 <motion.a
                   key={social.label}
                   href={social.href}
-                  className="p-2 bg-white/10 rounded-full hover:bg-white/20 transition-colors duration-300"
+                  className="p-2 bg-white/30 backdrop-blur-sm rounded-full hover:bg-white/50 transition-colors duration-300 text-slate-700 hover:text-slate-800"
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.95 }}
                   initial={{ opacity: 0, scale: 0.8 }}
@@ -58,7 +58,7 @@ const Footer: React.FC = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2, duration: 0.6 }}
           >
-            <h4 className="text-lg sm:text-xl font-semibold">Quick Links</h4>
+            <h4 className="text-lg sm:text-xl font-semibold text-slate-800">Quick Links</h4>
             <ul className="space-y-2 sm:space-y-3">
               {quickLinks.map((link, index) => (
                 <motion.li
@@ -69,7 +69,7 @@ const Footer: React.FC = () => {
                 >
                   <a
                     href="#"
-                    className="text-gray-300 hover:text-white transition-colors duration-300 text-sm sm:text-base"
+                    className="text-slate-700 hover:text-slate-900 transition-colors duration-300 text-sm sm:text-base"
                   >
                     {link}
                   </a>
@@ -85,7 +85,7 @@ const Footer: React.FC = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4, duration: 0.6 }}
           >
-            <h4 className="text-lg sm:text-xl font-semibold">Categories</h4>
+            <h4 className="text-lg sm:text-xl font-semibold text-slate-800">Categories</h4>
             <ul className="space-y-2 sm:space-y-3">
               {categories.map((category, index) => (
                 <motion.li
@@ -96,7 +96,7 @@ const Footer: React.FC = () => {
                 >
                   <a
                     href="#"
-                    className="text-gray-300 hover:text-white transition-colors duration-300 text-sm sm:text-base"
+                    className="text-slate-700 hover:text-slate-900 transition-colors duration-300 text-sm sm:text-base"
                   >
                     {category}
                   </a>
@@ -112,7 +112,7 @@ const Footer: React.FC = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.6, duration: 0.6 }}
           >
-            <h4 className="text-lg sm:text-xl font-semibold">Get in Touch</h4>
+            <h4 className="text-lg sm:text-xl font-semibold text-slate-800">Get in Touch</h4>
             <div className="space-y-3 sm:space-y-4">
               <motion.div
                 className="flex items-start space-x-3"
@@ -120,8 +120,8 @@ const Footer: React.FC = () => {
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.7, duration: 0.6 }}
               >
-                <MapPin size={16} className="text-gray-400 mt-0.5 flex-shrink-0" />
-                <span className="text-gray-300 text-sm sm:text-base">123 Art Street, Creative District</span>
+                <MapPin size={16} className="text-slate-600 mt-0.5 flex-shrink-0" />
+                <span className="text-slate-700 text-sm sm:text-base">123 Art Street, Creative District</span>
               </motion.div>
               <motion.div
                 className="flex items-center space-x-3"
@@ -129,8 +129,8 @@ const Footer: React.FC = () => {
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.8, duration: 0.6 }}
               >
-                <Phone size={16} className="text-gray-400 flex-shrink-0" />
-                <span className="text-gray-300 text-sm sm:text-base">+1 (555) 123-4567</span>
+                <Phone size={16} className="text-slate-600 flex-shrink-0" />
+                <span className="text-slate-700 text-sm sm:text-base">+1 (555) 123-4567</span>
               </motion.div>
               <motion.div
                 className="flex items-center space-x-3"
@@ -138,8 +138,8 @@ const Footer: React.FC = () => {
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.9, duration: 0.6 }}
               >
-                <Mail size={16} className="text-gray-400 flex-shrink-0" />
-                <span className="text-gray-300 text-sm sm:text-base break-all">hello@allureart.com</span>
+                <Mail size={16} className="text-slate-600 flex-shrink-0" />
+                <span className="text-slate-700 text-sm sm:text-base break-all">hello@allureart.com</span>
               </motion.div>
             </div>
           </motion.div>
@@ -147,22 +147,22 @@ const Footer: React.FC = () => {
 
         {/* Bottom Bar */}
         <motion.div
-          className="border-t border-gray-800 mt-8 sm:mt-12 pt-6 sm:pt-8 flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0"
+          className="border-t border-white/30 mt-8 sm:mt-12 pt-6 sm:pt-8 flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 1, duration: 0.6 }}
         >
-          <p className="text-gray-400 text-sm text-center md:text-left">
+          <p className="text-slate-600 text-sm text-center md:text-left">
             © 2024 Allure Art. All rights reserved.
           </p>
           <div className="flex flex-wrap justify-center md:justify-end space-x-4 sm:space-x-6">
-            <a href="#" className="text-gray-400 text-sm hover:text-white transition-colors duration-300">
+            <a href="#" className="text-slate-600 text-sm hover:text-slate-800 transition-colors duration-300">
               Privacy Policy
             </a>
-            <a href="#" className="text-gray-400 text-sm hover:text-white transition-colors duration-300">
+            <a href="#" className="text-slate-600 text-sm hover:text-slate-800 transition-colors duration-300">
               Terms of Service
             </a>
-            <a href="#" className="text-gray-400 text-sm hover:text-white transition-colors duration-300">
+            <a href="#" className="text-slate-600 text-sm hover:text-slate-800 transition-colors duration-300">
               Cookie Policy
             </a>
           </div>
