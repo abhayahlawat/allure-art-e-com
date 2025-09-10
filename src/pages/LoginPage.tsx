@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { Eye, EyeOff, Mail, Lock, User } from 'lucide-react';
 
 const LoginPage: React.FC = () => {
@@ -96,33 +96,29 @@ const LoginPage: React.FC = () => {
             transition={{ delay: 0.5, duration: 0.6 }}
           >
             {!isLogin && (
-              <AnimatePresence>
-                <motion.div
-                  key="name-field"
-                  initial={{ opacity: 0, height: 0, marginBottom: 0 }}
-                  animate={{ opacity: 1, height: 'auto', marginBottom: 24 }}
-                  exit={{ opacity: 0, height: 0, marginBottom: 0 }}
-                  transition={{ duration: 0.4, ease: "easeInOut" }}
-                  style={{ overflow: 'hidden' }}
-                >
-                  <label htmlFor="name" className="block text-sm font-medium text-slate-700 mb-2">
-                    Full Name
-                  </label>
-                  <div className="relative">
-                    <User size={20} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" />
-                    <input
-                      type="text"
-                      id="name"
-                      name="name"
-                      value={formData.name}
-                      onChange={handleInputChange}
-                      className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-pastel-sage focus:border-transparent transition-all duration-300"
-                      placeholder="Enter your full name"
-                      required={!isLogin}
-                    />
-                  </div>
-                </motion.div>
-              </AnimatePresence>
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                transition={{ duration: 0.3 }}
+              >
+                <label htmlFor="name" className="block text-sm font-medium text-slate-700 mb-2">
+                  Full Name
+                </label>
+                <div className="relative">
+                  <User size={20} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" />
+                  <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleInputChange}
+                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-pastel-sage focus:border-transparent transition-all duration-300"
+                    placeholder="Enter your full name"
+                    required={!isLogin}
+                  />
+                </div>
+              </motion.div>
             )}
 
             <div>
@@ -171,58 +167,44 @@ const LoginPage: React.FC = () => {
             </div>
 
             {!isLogin && (
-              <AnimatePresence>
-                <motion.div
-                  key="confirm-password-field"
-                  initial={{ opacity: 0, height: 0, marginBottom: 0 }}
-                  animate={{ opacity: 1, height: 'auto', marginBottom: 24 }}
-                  exit={{ opacity: 0, height: 0, marginBottom: 0 }}
-                  transition={{ duration: 0.4, ease: "easeInOut" }}
-                  style={{ overflow: 'hidden' }}
-                >
-                  <label htmlFor="confirmPassword" className="block text-sm font-medium text-slate-700 mb-2">
-                    Confirm Password
-                  </label>
-                  <div className="relative">
-                    <Lock size={20} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" />
-                    <input
-                      type={showPassword ? 'text' : 'password'}
-                      id="confirmPassword"
-                      name="confirmPassword"
-                      value={formData.confirmPassword}
-                      onChange={handleInputChange}
-                      className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-pastel-sage focus:border-transparent transition-all duration-300"
-                      placeholder="Confirm your password"
-                      required={!isLogin}
-                    />
-                  </div>
-                </motion.div>
-              </AnimatePresence>
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                transition={{ duration: 0.3 }}
+              >
+                <label htmlFor="confirmPassword" className="block text-sm font-medium text-slate-700 mb-2">
+                  Confirm Password
+                </label>
+                <div className="relative">
+                  <Lock size={20} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" />
+                  <input
+                    type={showPassword ? 'text' : 'password'}
+                    id="confirmPassword"
+                    name="confirmPassword"
+                    value={formData.confirmPassword}
+                    onChange={handleInputChange}
+                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-pastel-sage focus:border-transparent transition-all duration-300"
+                    placeholder="Confirm your password"
+                    required={!isLogin}
+                  />
+                </div>
+              </motion.div>
             )}
 
             {isLogin && (
-              <AnimatePresence>
-                <motion.div
-                  key="remember-me-section"
-                  className="flex items-center justify-between"
-                  initial={{ opacity: 0, height: 0, marginBottom: 0 }}
-                  animate={{ opacity: 1, height: 'auto', marginBottom: 24 }}
-                  exit={{ opacity: 0, height: 0, marginBottom: 0 }}
-                  transition={{ duration: 0.4, ease: "easeInOut" }}
-                  style={{ overflow: 'hidden' }}
-                >
-                  <label className="flex items-center">
-                    <input
-                      type="checkbox"
-                      className="w-4 h-4 text-pastel-sage border-gray-300 rounded focus:ring-pastel-sage"
-                    />
-                    <span className="ml-2 text-sm text-slate-600">Remember me</span>
-                  </label>
-                  <a href="#" className="text-sm text-slate-600 hover:text-slate-800 transition-colors duration-300">
-                    Forgot password?
-                  </a>
-                </motion.div>
-              </AnimatePresence>
+              <div className="flex items-center justify-between">
+                <label className="flex items-center">
+                  <input
+                    type="checkbox"
+                    className="w-4 h-4 text-pastel-sage border-gray-300 rounded focus:ring-pastel-sage"
+                  />
+                  <span className="ml-2 text-sm text-slate-600">Remember me</span>
+                </label>
+                <a href="#" className="text-sm text-slate-600 hover:text-slate-800 transition-colors duration-300">
+                  Forgot password?
+                </a>
+              </div>
             )}
 
             <motion.button
@@ -238,26 +220,21 @@ const LoginPage: React.FC = () => {
 
           {/* Terms */}
           {!isLogin && (
-            <AnimatePresence>
-              <motion.p
-                key="terms-section"
-                className="mt-6 text-center text-xs text-slate-500"
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: 'auto' }}
-                exit={{ opacity: 0, height: 0 }}
-                transition={{ duration: 0.4, ease: "easeInOut" }}
-                style={{ overflow: 'hidden' }}
-              >
-                By creating an account, you agree to our{' '}
-                <a href="#" className="text-slate-700 hover:text-slate-900 transition-colors duration-300">
-                  Terms of Service
-                </a>{' '}
-                and{' '}
-                <a href="#" className="text-slate-700 hover:text-slate-900 transition-colors duration-300">
-                  Privacy Policy
-                </a>
-              </motion.p>
-            </AnimatePresence>
+            <motion.p
+              className="mt-6 text-center text-xs text-slate-500"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.7, duration: 0.6 }}
+            >
+              By creating an account, you agree to our{' '}
+              <a href="#" className="text-slate-700 hover:text-slate-900 transition-colors duration-300">
+                Terms of Service
+              </a>{' '}
+              and{' '}
+              <a href="#" className="text-slate-700 hover:text-slate-900 transition-colors duration-300">
+                Privacy Policy
+              </a>
+            </motion.p>
           )}
         </motion.div>
       </div>
