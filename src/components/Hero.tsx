@@ -75,17 +75,17 @@ const Hero: React.FC = () => {
       </div>
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 min-h-screen flex items-center pt-20 sm:pt-24 md:pt-32 lg:pt-24">
-        <div className="grid lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-12 items-center w-full">
+        <div className="flex flex-col lg:grid lg:grid-cols-2 gap-8 lg:gap-12 items-center w-full">
           {/* Content */}
           <motion.div
-            className="space-y-6 sm:space-y-8"
+            className="space-y-6 sm:space-y-8 text-center lg:text-left order-2 lg:order-1"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, ease: "easeOut" }}
           >
             <div className="space-y-4 sm:space-y-6">
               <motion.h2
-                className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl 2xl:text-7xl font-light text-slate-800 leading-tight"
+                className="text-3xl sm:text-4xl md:text-5xl lg:text-5xl xl:text-6xl 2xl:text-7xl font-light text-slate-800 leading-tight"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1, duration: 0.5 }}
@@ -98,7 +98,7 @@ const Hero: React.FC = () => {
               </motion.h2>
 
               <motion.p
-                className="text-sm sm:text-base md:text-lg lg:text-xl text-slate-600 max-w-lg leading-relaxed"
+                className="text-base sm:text-lg md:text-xl lg:text-xl text-slate-600 max-w-lg mx-auto lg:mx-0 leading-relaxed"
                 initial={{ opacity: 0, y: 15 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2, duration: 0.5 }}
@@ -108,7 +108,7 @@ const Hero: React.FC = () => {
             </div>
 
             <motion.div
-              className="flex flex-col sm:flex-row gap-3 sm:gap-4"
+              className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start"
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3, duration: 0.5 }}
@@ -119,7 +119,7 @@ const Hero: React.FC = () => {
               >
                 <Link
                   to="/gallery"
-                  className="group bg-slate-800 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-full font-medium flex items-center justify-center space-x-2 hover:bg-slate-700 transition-all duration-300 text-sm sm:text-base min-h-[48px]"
+                  className="group bg-slate-800 text-white px-8 py-4 rounded-full font-medium flex items-center justify-center space-x-2 hover:bg-slate-700 transition-all duration-300 text-base min-h-[52px]"
                 >
                   <span>{currentSlideData.cta}</span>
                   <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform duration-300" />
@@ -132,7 +132,7 @@ const Hero: React.FC = () => {
               >
                 <Link
                   to="/artists"
-                  className="px-6 sm:px-8 py-3 sm:py-4 rounded-full font-medium text-slate-700 border-2 border-slate-300 hover:border-slate-400 transition-all duration-300 block text-center text-sm sm:text-base min-h-[48px] flex items-center justify-center"
+                  className="px-8 py-4 rounded-full font-medium text-slate-700 border-2 border-slate-300 hover:border-slate-400 transition-all duration-300 block text-center text-base min-h-[52px] flex items-center justify-center"
                 >
                   View Artists
                 </Link>
@@ -142,24 +142,24 @@ const Hero: React.FC = () => {
 
           {/* Featured Art Piece */}
           <motion.div
-            className="relative mt-8 lg:mt-0"
+            className="relative order-1 lg:order-2 w-full flex justify-center lg:justify-end"
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.6, delay: 0.2 }}
           >
             <div className="relative group">
               <motion.div
-                className="absolute -inset-2 sm:-inset-3 md:-inset-4 bg-gradient-to-r from-pastel-sage to-pastel-blush rounded-xl sm:rounded-2xl opacity-30"
+                className="absolute -inset-3 bg-gradient-to-r from-pastel-sage to-pastel-blush rounded-2xl opacity-30"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 0.3 }}
                 transition={{ delay: 0.3, duration: 0.5 }}
               />
               
               {/* Image container with smooth transitions */}
-              <div className="relative w-full max-w-[280px] sm:max-w-xs md:max-w-sm lg:max-w-md mx-auto h-[350px] sm:h-[400px] md:h-[450px] rounded-xl sm:rounded-2xl overflow-hidden">
+              <div className="relative w-full max-w-[300px] sm:max-w-sm md:max-w-md lg:max-w-lg mx-auto h-[380px] sm:h-[450px] md:h-[500px] lg:h-[550px] rounded-2xl overflow-hidden shadow-2xl">
                 {/* Loading placeholder */}
                 {!allImagesPreloaded && (
-                  <div className="absolute inset-0 bg-gradient-to-br from-pastel-lavender to-pastel-cream animate-pulse rounded-xl sm:rounded-2xl" />
+                  <div className="absolute inset-0 bg-gradient-to-br from-pastel-lavender to-pastel-cream animate-pulse rounded-2xl" />
                 )}
                 
                 {/* All images layered for smooth transitions */}
@@ -168,7 +168,7 @@ const Hero: React.FC = () => {
                     key={slide.id}
                     src={slide.image}
                     alt="Featured Artwork"
-                    className="absolute inset-0 w-full h-full object-cover rounded-xl sm:rounded-2xl shadow-lg sm:shadow-xl md:shadow-2xl group-hover:shadow-xl sm:group-hover:shadow-2xl md:group-hover:shadow-3xl transition-all duration-500"
+                    className="absolute inset-0 w-full h-full object-cover rounded-2xl transition-all duration-500"
                     initial={{ opacity: 0, scale: 1.05 }}
                     animate={{ 
                       opacity: index === currentSlide ? 1 : 0,
@@ -185,49 +185,49 @@ const Hero: React.FC = () => {
               </div>
               
               <motion.div
-                className="absolute bottom-2 left-2 right-2 sm:bottom-3 sm:left-3 sm:right-3 md:bottom-4 md:left-4 md:right-4 bg-white/90 backdrop-blur-sm p-2 sm:p-3 md:p-4 rounded-md sm:rounded-lg"
+                className="absolute bottom-4 left-4 right-4 bg-white/95 backdrop-blur-sm p-4 rounded-xl"
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.5, duration: 0.5 }}
               >
-                <h3 className="font-medium text-slate-800 mb-1 text-xs sm:text-sm">Ethereal Dreams</h3>
-                <p className="text-slate-600 text-xs">Marina Celestine • ₹1,03,750</p>
+                <h3 className="font-semibold text-slate-800 mb-1 text-sm sm:text-base">Ethereal Dreams</h3>
+                <p className="text-slate-600 text-xs sm:text-sm">Marina Celestine • ₹1,03,750</p>
               </motion.div>
             </div>
 
             {/* Slider Controls */}
-            <div className="hidden sm:block absolute top-1/2 -translate-y-1/2 -left-4">
+            <div className="hidden lg:block absolute top-1/2 -translate-y-1/2 -left-4">
               <motion.button
                 onClick={prevSlide}
-                className="bg-white/80 backdrop-blur-sm p-2 sm:p-3 rounded-full shadow-lg hover:bg-white transition-colors duration-300"
+                className="bg-white/90 backdrop-blur-sm p-3 rounded-full shadow-lg hover:bg-white transition-colors duration-300"
                 initial={{ opacity: 0, x: -5 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.6, duration: 0.5 }}
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.95 }}
               >
-                <ChevronLeft size={16} className="text-slate-700" />
+                <ChevronLeft size={20} className="text-slate-700" />
               </motion.button>
             </div>
             
-            <div className="hidden sm:block absolute top-1/2 -translate-y-1/2 -right-4">
+            <div className="hidden lg:block absolute top-1/2 -translate-y-1/2 -right-4">
               <motion.button
                 onClick={nextSlide}
-                className="bg-white/80 backdrop-blur-sm p-2 sm:p-3 rounded-full shadow-lg hover:bg-white transition-colors duration-300"
+                className="bg-white/90 backdrop-blur-sm p-3 rounded-full shadow-lg hover:bg-white transition-colors duration-300"
                 initial={{ opacity: 0, x: 5 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.6, duration: 0.5 }}
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.95 }}
               >
-                <ChevronRight size={16} className="text-slate-700" />
+                <ChevronRight size={20} className="text-slate-700" />
               </motion.button>
             </div>
           </motion.div>
         </div>
 
         {/* Slide Indicators */}
-        <div className="absolute bottom-6 sm:bottom-8 md:bottom-12 lg:bottom-20 left-1/2 transform -translate-x-1/2 flex space-x-2 sm:space-x-3">
+        <div className="absolute bottom-8 lg:bottom-20 left-1/2 transform -translate-x-1/2 flex space-x-3">
           {heroSlides.map((_, index) => (
             <motion.button
               key={index}
