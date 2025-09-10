@@ -1,9 +1,20 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Instagram, Globe, Twitter, MapPin, Calendar, Palette } from 'lucide-react';
 import { artists } from '../data/artists';
 
 const ArtistsPage: React.FC = () => {
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [imagesLoaded, setImagesLoaded] = useState<{ [key: string]: boolean }>({});
+
+  useEffect(() => {
+    // Set loaded state immediately to prevent stuck feeling
+    setIsLoaded(true);
+  }, []);
+
+  const handleImageLoad = (artistId: string) => {
+    setImagesLoaded(prev => ({ ...prev, [artistId]: true }));
+  };
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -16,16 +27,16 @@ const ArtistsPage: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <motion.h1
             className="text-6xl font-light text-slate-800 mb-6"
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: isLoaded ? 1 : 0, y: isLoaded ? 0 : 20 }}
+            transition={{ duration: 0.6 }}
           >
             Meet Our <span className="font-cursive">Artists</span>
           </motion.h1>
           <motion.p
             className="text-xl text-slate-600 max-w-3xl mx-auto"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: isLoaded ? 1 : 0, y: isLoaded ? 0 : 15 }}
             transition={{ delay: 0.2, duration: 0.6 }}
           >
             Discover the talented individuals behind our extraordinary collection. Each artist brings their unique 
@@ -42,29 +53,48 @@ const ArtistsPage: React.FC = () => {
               <motion.div
                 key={artist.id}
                 className="group relative bg-white rounded-2xl overflow-hidden shadow-md md:hover:shadow-2xl transition-all duration-500"
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.15, duration: 0.8 }}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: isLoaded ? 1 : 0, y: isLoaded ? 0 : 20 }}
+                transition={{ delay: 0.3 + index * 0.1, duration: 0.6 }}
               >
                 {/* Artist Image */}
                 <div className="relative h-64 overflow-hidden">
+                  {/* Image loading placeholder */}
+                  {!imagesLoaded[artist.id] && (
+                    <div className="absolute inset-0 bg-gradient-to-br from-pastel-lavender to-pastel-cream animate-pulse" />
+                  )}
+                  
                   <motion.img
                     src={artist.image}
                     alt={artist.name}
-                    className="w-full h-full object-cover md:group-hover:scale-110 transition-transform duration-700"
+                    className={`w-full h-full object-cover md:group-hover:scale-110 transition-all duration-700 ${
+                      imagesLoaded[artist.id] ? 'opacity-100' : 'opacity-0'
+                    }`}
+                    onLoad={() => handleImageLoad(artist.id)}
+                    loading="lazy"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
                   
                   {/* Floating specialty badge */}
-                  <div className="absolute top-4 left-4">
+                  <motion.div 
+                    className="absolute top-4 left-4"
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: imagesLoaded[artist.id] ? 1 : 0, scale: imagesLoaded[artist.id] ? 1 : 0.8 }}
+                    transition={{ delay: 0.5 + index * 0.1, duration: 0.4 }}
+                  >
                     <span className="inline-flex items-center bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-semibold text-slate-800">
                       <Palette size={12} className="mr-1" />
                       {artist.specialty}
                     </span>
-                  </div>
+                  </motion.div>
 
                   {/* Social links overlay */}
-                  <div className="absolute top-4 right-4 flex flex-col space-y-2 opacity-0 md:group-hover:opacity-100 transition-opacity duration-300">
+                  <motion.div 
+                    className="absolute top-4 right-4 flex flex-col space-y-2 opacity-0 md:group-hover:opacity-100 transition-opacity duration-300"
+                    initial={{ opacity: 0, x: 10 }}
+                    animate={{ opacity: 0, x: imagesLoaded[artist.id] ? 0 : 10 }}
+                    transition={{ delay: 0.6 + index * 0.1, duration: 0.4 }}
+                  >
                     {artist.socialLinks.instagram && (
                       <motion.a
                         href="#"
@@ -95,10 +125,15 @@ const ArtistsPage: React.FC = () => {
                         <Twitter size={14} className="text-slate-700" />
                       </motion.a>
                     )}
-                  </div>
+                  </motion.div>
 
                   {/* Artist name overlay */}
-                  <div className="absolute bottom-4 left-4 right-4">
+                  <motion.div 
+                    className="absolute bottom-4 left-4 right-4"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: imagesLoaded[artist.id] ? 1 : 0, y: imagesLoaded[artist.id] ? 0 : 10 }}
+                    transition={{ delay: 0.7 + index * 0.1, duration: 0.4 }}
+                  >
                     <h3 className="text-2xl font-bold text-white mb-1">
                       {artist.name}
                     </h3>
@@ -106,11 +141,16 @@ const ArtistsPage: React.FC = () => {
                       <MapPin size={14} className="mr-1" />
                       <span>Based in New York</span>
                     </div>
-                  </div>
+                  </motion.div>
                 </div>
 
                 {/* Artist Info */}
-                <div className="p-5">
+                <motion.div 
+                  className="p-5"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: isLoaded ? 1 : 0, y: isLoaded ? 0 : 10 }}
+                  transition={{ delay: 0.4 + index * 0.1, duration: 0.6 }}
+                >
                   <div className="space-y-3">
                     <p className="text-slate-600 leading-relaxed text-sm line-clamp-3">
                       {artist.bio}
@@ -147,7 +187,7 @@ const ArtistsPage: React.FC = () => {
                       )}
                     </div>
                   </div>
-                </div>
+                </motion.div>
               </motion.div>
             ))}
           </div>
@@ -155,9 +195,9 @@ const ArtistsPage: React.FC = () => {
           {/* Call to Action */}
           <motion.div
             className="text-center mt-16"
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.8, duration: 0.8 }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: isLoaded ? 1 : 0, y: isLoaded ? 0 : 20 }}
+            transition={{ delay: 0.8, duration: 0.6 }}
           >
             <h3 className="text-2xl font-light text-slate-800 mb-4">
               Interested in <span className="font-cursive">collaborating</span>?
