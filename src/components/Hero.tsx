@@ -7,7 +7,8 @@ import { heroSlides } from '../data/heroSlides';
 const Hero: React.FC = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isLoaded, setIsLoaded] = useState(false);
-  const [imageLoaded, setImageLoaded] = useState(false);
+  const [imageLoaded, setImageLoaded] = useState<{ [key: number]: boolean }>({});
+  const [isTransitioning, setIsTransitioning] = useState(false);
 
   // Set loaded state immediately to prevent stuck feeling
   useEffect(() => {
@@ -15,6 +16,7 @@ const Hero: React.FC = () => {
   }, []);
 
   useEffect(() => {
+    setIsTransitioning(true);
     const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % heroSlides.length);
     }, 6000);
@@ -22,18 +24,27 @@ const Hero: React.FC = () => {
     return () => clearInterval(timer);
   }, []);
 
+  useEffect(() => {
+    // Reset transition state after slide change
+    const timer = setTimeout(() => {
+      setIsTransitioning(false);
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [currentSlide]);
   const nextSlide = () => {
+    setIsTransitioning(true);
     setCurrentSlide((prev) => (prev + 1) % heroSlides.length);
   };
 
   const prevSlide = () => {
+    setIsTransitioning(true);
     setCurrentSlide((prev) => (prev - 1 + heroSlides.length) % heroSlides.length);
   };
 
   const currentSlideData = heroSlides[currentSlide];
 
-  const handleImageLoad = () => {
-    setImageLoaded(true);
+  const handleImageLoad = (slideIndex: number) => {
+    setImageLoaded(prev => ({ ...prev, [slideIndex]: true }));
   };
   return (
     <section className="relative min-h-screen bg-gradient-to-br from-pastel-lavender via-pastel-cream to-pastel-blush overflow-hidden">
@@ -140,31 +151,65 @@ const Hero: React.FC = () => {
                 transition={{ delay: 0.5, duration: 0.6 }}
               />
               
-              {/* Image loading placeholder */}
-              {!imageLoaded && (
-                <div className="relative w-full max-w-[280px] sm:max-w-xs md:max-w-sm lg:max-w-md mx-auto h-[350px] sm:h-[400px] md:h-[450px] bg-gradient-to-br from-pastel-lavender to-pastel-cream rounded-xl sm:rounded-2xl animate-pulse" />
-              )}
-              
-              <motion.img
-                src={currentSlideData.image}
-                alt="Featured Artwork"
-                className={`relative w-full max-w-[280px] sm:max-w-xs md:max-w-sm lg:max-w-md mx-auto rounded-xl sm:rounded-2xl shadow-lg sm:shadow-xl md:shadow-2xl group-hover:shadow-xl sm:group-hover:shadow-2xl md:group-hover:shadow-3xl transition-all duration-500 ${
-                  imageLoaded ? 'opacity-100' : 'opacity-0'
-                }`}
-                whileHover={{ scale: 1.02, rotate: 1 }}
-                transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                onLoad={handleImageLoad}
-                loading="eager"
-              />
+              {/* Image container with smooth transitions */}
+              <div className="relative w-full max-w-[280px] sm:max-w-xs md:max-w-sm lg:max-w-md mx-auto h-[350px] sm:h-[400px] md:h-[450px] overflow-hidden rounded-xl sm:rounded-2xl">
+                {heroSlides.map((slide, index) => (
+                  <motion.div
+                    key={slide.id}
+                    className="absolute inset-0"
+                    initial={{ opacity: 0, scale: 1.1 }}
+                    animate={{ 
+                      opacity: index === currentSlide ? 1 : 0,
+                      scale: index === currentSlide ? 1 : 1.1
+                    }}
+                    transition={{ 
+                      duration: 0.8,
+                      ease: [0.25, 0.46, 0.45, 0.94]
+                    }}
+                  >
+                    {/* Loading placeholder for each image */}
+                    {!imageLoaded[index] && (
+                      <div className="absolute inset-0 bg-gradient-to-br from-pastel-lavender to-pastel-cream animate-pulse rounded-xl sm:rounded-2xl" />
+                    )}
+                    
+                    <motion.img
+                      src={slide.image}
+                      alt={`Featured Artwork ${index + 1}`}
+                      className={`w-full h-full object-cover rounded-xl sm:rounded-2xl shadow-lg sm:shadow-xl md:shadow-2xl transition-all duration-500 ${
+                        imageLoaded[index] ? 'opacity-100' : 'opacity-0'
+                      }`}
+                      whileHover={{ scale: 1.02, rotate: 1 }}
+                      transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                      onLoad={() => handleImageLoad(index)}
+                      loading={index === 0 ? "eager" : "lazy"}
+                    />
+                  </motion.div>
+                ))}
+              </div>
               
               <motion.div
-                className="absolute bottom-2 left-2 right-2 sm:bottom-3 sm:left-3 sm:right-3 md:bottom-4 md:left-4 md:right-4 bg-white/90 backdrop-blur-sm p-2 sm:p-3 md:p-4 rounded-md sm:rounded-lg"
+                className="absolute bottom-2 left-2 right-2 sm:bottom-3 sm:left-3 sm:right-3 md:bottom-4 md:left-4 md:right-4 bg-white/90 backdrop-blur-sm p-2 sm:p-3 md:p-4 rounded-md sm:rounded-lg transition-all duration-500"
                 initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: imageLoaded ? 1 : 0, y: imageLoaded ? 0 : 10 }}
+                animate={{ opacity: imageLoaded[currentSlide] ? 1 : 0, y: imageLoaded[currentSlide] ? 0 : 10 }}
                 transition={{ delay: 0.8, duration: 0.6 }}
+                key={currentSlide} // Force re-render for smooth text transitions
               >
-                <h3 className="font-medium text-slate-800 mb-1 text-xs sm:text-sm">Ethereal Dreams</h3>
-                <p className="text-slate-600 text-xs">Marina Celestine • ₹1,03,750</p>
+                <motion.h3 
+                  className="font-medium text-slate-800 mb-1 text-xs sm:text-sm"
+                  initial={{ opacity: 0, y: 5 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4 }}
+                >
+                  {currentSlideData.title} Dreams
+                </motion.h3>
+                <motion.p 
+                  className="text-slate-600 text-xs"
+                  initial={{ opacity: 0, y: 5 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4, delay: 0.1 }}
+                >
+                  Marina Celestine • ₹1,03,750
+                </motion.p>
               </motion.div>
             </div>
 
@@ -205,7 +250,7 @@ const Hero: React.FC = () => {
             <motion.button
               key={index}
               onClick={() => setCurrentSlide(index)}
-              className={`w-3 h-3 rounded-full transition-all duration-300 ${
+              className={`w-3 h-3 rounded-full transition-all duration-500 ${
                 index === currentSlide ? 'bg-slate-800' : 'bg-slate-400'
               }`}
               initial={{ opacity: 0, scale: 0.8 }}
