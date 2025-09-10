@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import { AnimatePresence, motion } from 'framer-motion';
 import { CartProvider } from './context/CartContext';
 import { WishlistProvider } from './context/WishlistContext';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import Cart from './components/Cart';
-import BarbaWrapper from './components/BarbaWrapper';
 import Home from './pages/Home';
 import GalleryPage from './pages/GalleryPage';
 import ArtistsPage from './pages/ArtistsPage';
@@ -13,6 +13,44 @@ import AboutPage from './pages/AboutPage';
 import ContactPage from './pages/ContactPage';
 import WishlistPage from './pages/WishlistPage';
 import LoginPage from './pages/LoginPage';
+
+// Page transition variants
+const pageVariants = {
+  initial: {
+    opacity: 0,
+    y: 20,
+    scale: 0.98
+  },
+  in: {
+    opacity: 1,
+    y: 0,
+    scale: 1
+  },
+  out: {
+    opacity: 0,
+    y: -20,
+    scale: 1.02
+  }
+};
+
+const pageTransition = {
+  type: 'tween',
+  ease: 'anticipate',
+  duration: 0.5
+};
+
+// Page wrapper component
+const PageWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
+  <motion.div
+    initial="initial"
+    animate="in"
+    exit="out"
+    variants={pageVariants}
+    transition={pageTransition}
+  >
+    {children}
+  </motion.div>
+);
 
 const AppContent: React.FC<{ onCartOpen: () => void; isCartOpen: boolean; onCartClose: () => void }> = ({ 
   onCartOpen, 
@@ -26,17 +64,17 @@ const AppContent: React.FC<{ onCartOpen: () => void; isCartOpen: boolean; onCart
     <div className="min-h-screen bg-white w-full">
       {!isLoginPage && <Header onCartOpen={onCartOpen} />}
       
-      <div data-barba="wrapper">
-        <Routes>
-          <Route path="/" element={<BarbaWrapper namespace="home"><Home /></BarbaWrapper>} />
-          <Route path="/gallery" element={<BarbaWrapper namespace="gallery"><GalleryPage /></BarbaWrapper>} />
-          <Route path="/artists" element={<BarbaWrapper namespace="artists"><ArtistsPage /></BarbaWrapper>} />
-          <Route path="/about" element={<BarbaWrapper namespace="about"><AboutPage /></BarbaWrapper>} />
-          <Route path="/contact" element={<BarbaWrapper namespace="contact"><ContactPage /></BarbaWrapper>} />
-          <Route path="/wishlist" element={<BarbaWrapper namespace="wishlist"><WishlistPage /></BarbaWrapper>} />
-          <Route path="/login" element={<BarbaWrapper namespace="login"><LoginPage /></BarbaWrapper>} />
+      <AnimatePresence mode="wait">
+        <Routes location={location} key={location.pathname}>
+          <Route path="/" element={<PageWrapper><Home /></PageWrapper>} />
+          <Route path="/gallery" element={<PageWrapper><GalleryPage /></PageWrapper>} />
+          <Route path="/artists" element={<PageWrapper><ArtistsPage /></PageWrapper>} />
+          <Route path="/about" element={<PageWrapper><AboutPage /></PageWrapper>} />
+          <Route path="/contact" element={<PageWrapper><ContactPage /></PageWrapper>} />
+          <Route path="/wishlist" element={<PageWrapper><WishlistPage /></PageWrapper>} />
+          <Route path="/login" element={<PageWrapper><LoginPage /></PageWrapper>} />
         </Routes>
-      </div>
+      </AnimatePresence>
       
       {!isLoginPage && <Footer />}
       <Cart isOpen={isCartOpen} onClose={onCartClose} />

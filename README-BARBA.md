@@ -1,131 +1,118 @@
-# Barba.js Integration with React Router - Hybrid Approach
+# Framer Motion Page Transitions with React Router
 
-This project now includes Barba.js for smooth page transitions while maintaining React Router for client-side routing.
+This project uses Framer Motion for smooth page transitions while maintaining React Router for client-side routing.
 
 ## Installation
 
-Run the following command to install the required dependencies:
+Framer Motion is already included as a dependency:
 
 ```bash
-npm install @barba/core @barba/css gsap
+npm install framer-motion
 ```
 
 ## How It Works
 
-### Hybrid Architecture
+### Architecture
 - **React Router**: Handles client-side routing and component rendering
-- **Barba.js**: Provides smooth page transitions and animations
-- **GSAP**: Powers the transition animations
+- **Framer Motion**: Provides smooth page transitions and animations
+- **AnimatePresence**: Manages enter/exit animations between routes
 
 ### Key Components
 
-1. **BarbaWrapper** (`src/components/BarbaWrapper.tsx`)
-   - Wraps each page component
-   - Initializes Barba.js on first mount
-   - Provides namespace for page-specific transitions
+1. **PageWrapper** (in `src/App.tsx`)
+   - Wraps each page component with motion.div
+   - Provides consistent enter/exit animations
+   - Uses Framer Motion variants for smooth transitions
 
-2. **Barba Configuration** (`src/utils/barba.ts`)
-   - Defines transition animations (fade, slide, scale)
-   - Sets up page-specific views
-   - Handles loading states
-
-3. **Type Definitions** (`src/types/barba.d.ts`)
-   - TypeScript definitions for Barba.js and GSAP
-   - Ensures type safety
-
-4. **Styles** (`src/styles/barba.css`)
-   - CSS animations and transitions
-   - Loading indicators
-   - Page-specific backgrounds
+2. **AnimatePresence** (in `src/App.tsx`)
+   - Manages page transition animations
+   - Ensures smooth enter/exit sequences
+   - Uses `mode="wait"` for sequential animations
 
 ## Available Transitions
 
-### 1. Fade Transition
-- Smooth opacity transition
-- Default transition for most pages
-
-### 2. Slide Transition
-- Horizontal sliding effect
-- Great for gallery/portfolio pages
-
-### 3. Scale Transition
-- Scale and fade effect
-- Perfect for modal-like transitions
+### Current Transition
+- **Fade + Scale + Slide**: Combined effect with opacity, scale, and vertical movement
+- **Duration**: 0.5 seconds with anticipate easing
+- **Enter**: Fades in from below with slight scale up
+- **Exit**: Fades out upward with slight scale up
 
 ## Usage
 
-Each route is automatically wrapped with BarbaWrapper:
+Each route is automatically wrapped with PageWrapper:
 
 ```tsx
-<Route path="/" element={<BarbaWrapper namespace="home"><Home /></BarbaWrapper>} />
+<Route path="/" element={<PageWrapper><Home /></PageWrapper>} />
 ```
-
-## Page Namespaces
-
-- `home` - Home page
-- `gallery` - Gallery page
-- `artists` - Artists page
-- `about` - About page
-- `contact` - Contact page
-- `wishlist` - Wishlist page
-- `login` - Login page
 
 ## Customization
 
 ### Adding New Transitions
 
-1. Define transition in `src/utils/barba.ts`:
+1. Modify the `pageVariants` object in `src/App.tsx`:
 ```typescript
-const customTransition = {
-  name: 'custom',
-  leave(data: any) {
-    return gsap.to(data.current.container, {
-      // Your exit animation
-    });
+const pageVariants = {
+  initial: {
+    opacity: 0,
+    x: -100, // Slide from left
+    scale: 0.95
   },
-  enter(data: any) {
-    return gsap.from(data.next.container, {
-      // Your enter animation
-    });
+  in: {
+    opacity: 1,
+    x: 0,
+    scale: 1
+  },
+  out: {
+    opacity: 0,
+    x: 100, // Slide to right
+    scale: 1.05
   }
 };
 ```
 
-2. Add to transitions array in `initBarba()`
+2. Adjust the `pageTransition` object:
+```typescript
+const pageTransition = {
+  type: 'spring',
+  stiffness: 300,
+  damping: 30
+};
+```
 
 ### Page-Specific Animations
-
-Add view configurations in `src/utils/barba.ts`:
+Create different variants for specific pages:
 ```typescript
-{
-  namespace: 'your-page',
-  beforeEnter() {
-    // Initialize page-specific animations
-  }
-}
+const galleryVariants = {
+  initial: { opacity: 0, scale: 1.1 },
+  in: { opacity: 1, scale: 1 },
+  out: { opacity: 0, scale: 0.9 }
+};
 ```
 
 ## Performance Considerations
 
-- Transitions are hardware-accelerated using GSAP
-- Loading indicator provides visual feedback
+- Transitions are hardware-accelerated using Framer Motion
+- Smooth 60fps animations
 - Smooth scroll behavior enabled
 - Minimal impact on bundle size
+- Optimized for mobile devices
 
 ## Browser Support
 
-- Modern browsers with ES6+ support
-- Fallback to standard navigation if Barba.js fails to load
+- Modern browsers with CSS transforms support
+- Graceful degradation on older browsers
+- Mobile-optimized animations
 
 ## Troubleshooting
 
-1. **Transitions not working**: Ensure all pages are wrapped with BarbaWrapper
-2. **TypeScript errors**: Check type definitions in `src/types/barba.d.ts`
+1. **Transitions not working**: Ensure all pages are wrapped with PageWrapper
+2. **Performance issues**: Reduce animation duration or complexity
 3. **Performance issues**: Reduce animation duration or complexity
+4. **Layout shifts**: Use `layout` prop on motion components if needed
 
 ## Future Enhancements
 
 - Add more transition types
-- Implement page preloading
-- Add transition sound effects
-- Create transition based on scroll direction
+- Page-specific transition variants
+- Gesture-based navigation
+- Shared element transitions
