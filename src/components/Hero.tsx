@@ -190,13 +190,13 @@ const Hero: React.FC = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.5, duration: 0.5 }}
               >
-                <h3 className="font-medium text-slate-800 mb-1 text-xs sm:text-sm">Ethereal Dreams</h3>
-                <p className="text-slate-600 text-xs">Marina Celestine • ₹1,03,750</p>
+                <h3 className="font-medium text-slate-800 mb-1 text-xs sm:text-sm md:text-base">Ethereal Dreams</h3>
+                <p className="text-slate-600 text-xs sm:text-sm">Marina Celestine • ₹1,03,750</p>
               </motion.div>
             </div>
 
             {/* Slider Controls */}
-            <div className="hidden sm:block absolute top-1/2 -translate-y-1/2 -left-4">
+            <div className="hidden sm:block absolute top-1/2 -translate-y-1/2 -left-3 md:-left-4">
               <motion.button
                 onClick={prevSlide}
                 className="bg-white/80 backdrop-blur-sm p-2 sm:p-3 rounded-full shadow-lg hover:bg-white transition-colors duration-300"
@@ -206,11 +206,11 @@ const Hero: React.FC = () => {
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.95 }}
               >
-                <ChevronLeft size={16} className="text-slate-700" />
+                <ChevronLeft size={16} className="text-slate-700 sm:w-5 sm:h-5" />
               </motion.button>
             </div>
             
-            <div className="hidden sm:block absolute top-1/2 -translate-y-1/2 -right-4">
+            <div className="hidden sm:block absolute top-1/2 -translate-y-1/2 -right-3 md:-right-4">
               <motion.button
                 onClick={nextSlide}
                 className="bg-white/80 backdrop-blur-sm p-2 sm:p-3 rounded-full shadow-lg hover:bg-white transition-colors duration-300"
@@ -220,7 +220,7 @@ const Hero: React.FC = () => {
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.95 }}
               >
-                <ChevronRight size={16} className="text-slate-700" />
+                <ChevronRight size={16} className="text-slate-700 sm:w-5 sm:h-5" />
               </motion.button>
             </div>
           </motion.div>
