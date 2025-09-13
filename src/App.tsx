@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
-import AllureLoader from './components/AllureLoader';
 import { CartProvider } from './context/CartContext';
 import { WishlistProvider } from './context/WishlistContext';
 import Header from './components/Header';
@@ -14,22 +13,6 @@ import AboutPage from './pages/AboutPage';
 import ContactPage from './pages/ContactPage';
 import WishlistPage from './pages/WishlistPage';
 import LoginPage from './pages/LoginPage';
-
-// Custom hook to simulate app loading
-const useAppLoading = () => {
-  const [loading, setLoading] = useState(true);
-
-  React.useEffect(() => {
-    // Simulate loading time (replace with actual loading logic)
-    const timer = setTimeout(() => {
-      setLoading(false);
-    }, 3000); // 3 seconds minimum
-
-    return () => clearTimeout(timer);
-  }, []);
-
-  return loading;
-};
 
 // Page transition variants
 const pageVariants = {
@@ -105,7 +88,6 @@ const AppContent: React.FC<{ onCartOpen: () => void; isCartOpen: boolean; onCart
 
 function App() {
   const [isCartOpen, setIsCartOpen] = useState(false);
-  const isLoading = useAppLoading();
 
   // Prevent scroll restoration on page reload
   React.useEffect(() => {
@@ -124,23 +106,17 @@ function App() {
   };
 
   return (
-    <>
-      <AllureLoader loading={isLoading} minDisplayMs={2500} />
-      
-      {!isLoading && (
-        <Router>
-          <CartProvider>
-            <WishlistProvider>
-              <AppContent 
-                onCartOpen={handleCartOpen}
-                isCartOpen={isCartOpen}
-                onCartClose={handleCartClose}
-              />
-            </WishlistProvider>
-          </CartProvider>
-        </Router>
-      )}
-    </>
+    <Router>
+      <CartProvider>
+        <WishlistProvider>
+          <AppContent 
+            onCartOpen={handleCartOpen}
+            isCartOpen={isCartOpen}
+            onCartClose={handleCartClose}
+          />
+        </WishlistProvider>
+      </CartProvider>
+    </Router>
   );
 }
 
