@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
+import LoadingScreen from './components/LoadingScreen';
 import { CartProvider } from './context/CartContext';
 import { WishlistProvider } from './context/WishlistContext';
 import Header from './components/Header';
@@ -88,6 +89,7 @@ const AppContent: React.FC<{ onCartOpen: () => void; isCartOpen: boolean; onCart
 
 function App() {
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   // Prevent scroll restoration on page reload
   React.useEffect(() => {
@@ -97,6 +99,16 @@ function App() {
     // Ensure page starts at top on initial load
     window.scrollTo(0, 0);
   }, []);
+
+  // Handle loading screen
+  React.useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 5000); // 5 seconds total loading time
+
+    return () => clearTimeout(timer);
+  }, []);
+
   const handleCartOpen = () => {
     setIsCartOpen(true);
   };
@@ -106,17 +118,32 @@ function App() {
   };
 
   return (
-    <Router>
-      <CartProvider>
-        <WishlistProvider>
-          <AppContent 
-            onCartOpen={handleCartOpen}
-            isCartOpen={isCartOpen}
-            onCartClose={handleCartClose}
-          />
-        </WishlistProvider>
-      </CartProvider>
-    </Router>
+    <>
+      <AnimatePresence mode="wait">
+        {isLoading ? (
+          <LoadingScreen key="loading" />
+        ) : (
+          <motion.div
+            key="app"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.8 }}
+          >
+            <Router>
+              <CartProvider>
+                <WishlistProvider>
+                  <AppContent 
+                    onCartOpen={handleCartOpen}
+                    isCartOpen={isCartOpen}
+                    onCartClose={handleCartClose}
+                  />
+                </WishlistProvider>
+              </CartProvider>
+            </Router>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
   );
 }
 
