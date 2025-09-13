@@ -59,40 +59,138 @@ const Gallery: React.FC = () => {
         </motion.div>
 
         {/* Filters */}
+        {/* Desktop Filters */}
         <motion.div
-          className="flex flex-col md:flex-row gap-6 mb-12 p-6 bg-white/60 backdrop-blur-sm rounded-2xl"
+          className="hidden md:block mb-12"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2, duration: 0.6 }}
         >
-          <div className="flex items-center space-x-2">
-            <Filter size={20} className="text-slate-600" />
-            <span className="font-medium text-slate-700">Filter & Sort</span>
-          </div>
+          <div className="bg-white/80 backdrop-blur-sm rounded-3xl p-8 shadow-lg border border-gray-100">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-3">
+                <div className="p-2 bg-slate-100 rounded-xl">
+                  <Filter size={20} className="text-slate-700" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-slate-800">Filter & Sort</h3>
+                  <p className="text-sm text-slate-600">Refine your search</p>
+                </div>
+              </div>
+              
+              <div className="flex items-center space-x-4">
+                {/* Category Pills */}
+                <div className="flex items-center space-x-2">
+                  <span className="text-sm font-medium text-slate-700">Category:</span>
+                  <div className="flex flex-wrap gap-2">
+                    {categories.map(category => (
+                      <motion.button
+                        key={category}
+                        onClick={() => setSelectedCategory(category)}
+                        className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
+                          selectedCategory === category
+                            ? 'bg-slate-800 text-white shadow-md'
+                            : 'bg-gray-100 text-slate-700 hover:bg-gray-200'
+                        }`}
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                      >
+                        {category}
+                      </motion.button>
+                    ))}
+                  </div>
+                </div>
 
-          <div className="flex flex-wrap gap-4">
+                {/* Sort Dropdown */}
+                <div className="flex items-center space-x-2">
+                  <span className="text-sm font-medium text-slate-700">Sort:</span>
+                  <select
+                    value={sortBy}
+                    onChange={(e) => setSortBy(e.target.value)}
+                    className="px-4 py-2 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-slate-300 focus:border-transparent text-sm font-medium text-slate-700 cursor-pointer"
+                  >
+                    <option value="name">Name A-Z</option>
+                    <option value="price-low">Price: Low to High</option>
+                    <option value="price-high">Price: High to Low</option>
+                    <option value="year">Newest First</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Mobile Filters */}
+        <motion.div
+          className="md:hidden mb-8"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2, duration: 0.6 }}
+        >
+          <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
+            {/* Header */}
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center space-x-3">
+                <div className="p-2 bg-slate-100 rounded-lg">
+                  <Filter size={18} className="text-slate-700" />
+                </div>
+                <h3 className="font-semibold text-slate-800">Filters</h3>
+              </div>
+              <span className="text-sm text-slate-600">
+                {filteredAndSortedProducts.length} results
+              </span>
+            </div>
+
             {/* Category Filter */}
-            <select
-              value={selectedCategory}
-              onChange={(e) => setSelectedCategory(e.target.value)}
-              className="px-4 py-2 bg-white border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-pastel-sage"
-            >
-              {categories.map(category => (
-                <option key={category} value={category}>{category}</option>
-              ))}
-            </select>
+            <div className="mb-6">
+              <label className="block text-sm font-medium text-slate-700 mb-3">
+                Category
+              </label>
+              <div className="grid grid-cols-2 gap-2">
+                {categories.map(category => (
+                  <motion.button
+                    key={category}
+                    onClick={() => setSelectedCategory(category)}
+                    className={`p-3 rounded-xl text-sm font-medium transition-all duration-300 ${
+                      selectedCategory === category
+                        ? 'bg-slate-800 text-white shadow-md'
+                        : 'bg-gray-50 text-slate-700 border border-gray-200'
+                    }`}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    {category}
+                  </motion.button>
+                ))}
+              </div>
+            </div>
 
             {/* Sort Options */}
-            <select
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value)}
-              className="px-4 py-2 bg-white border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-pastel-sage"
-            >
-              <option value="name">Sort by Name</option>
-              <option value="price-low">Price: Low to High</option>
-              <option value="price-high">Price: High to Low</option>
-              <option value="year">Newest First</option>
-            </select>
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-3">
+                Sort by
+              </label>
+              <div className="grid grid-cols-1 gap-2">
+                {[
+                  { value: 'name', label: 'Name A-Z' },
+                  { value: 'price-low', label: 'Price: Low to High' },
+                  { value: 'price-high', label: 'Price: High to Low' },
+                  { value: 'year', label: 'Newest First' }
+                ].map(option => (
+                  <motion.button
+                    key={option.value}
+                    onClick={() => setSortBy(option.value)}
+                    className={`p-3 rounded-xl text-sm font-medium text-left transition-all duration-300 ${
+                      sortBy === option.value
+                        ? 'bg-slate-800 text-white shadow-md'
+                        : 'bg-gray-50 text-slate-700 border border-gray-200'
+                    }`}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    {option.label}
+                  </motion.button>
+                ))}
+              </div>
+            </div>
           </div>
         </motion.div>
 
