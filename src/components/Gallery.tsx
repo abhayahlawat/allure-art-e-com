@@ -1,5 +1,4 @@
 import React, { useState, useMemo } from 'react';
-import { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Filter } from 'lucide-react';
 import ProductCard from './ProductCard';
@@ -12,7 +11,6 @@ const Gallery: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [sortBy, setSortBy] = useState('name');
-  const [isMobile, setIsMobile] = useState(false);
 
   const categories = ['All', ...Array.from(new Set(products.map(p => p.category)))];
 
@@ -31,13 +29,6 @@ const Gallery: React.FC = () => {
       }
     });
   }, [selectedCategory, sortBy]);
-
-  useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth < 768);
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
 
   const handleViewDetails = (product: Product) => {
     setSelectedProduct(product);
@@ -108,15 +99,14 @@ const Gallery: React.FC = () => {
         {/* Products Grid */}
         <motion.div
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
-          initial={false}
           layout
         >
-          {filteredAndSortedProducts.slice(0, isMobile ? 6 : filteredAndSortedProducts.length).map((product, index) => (
+          {filteredAndSortedProducts.map((product, index) => (
             <motion.div
               key={product.id}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: isMobile ? index * 0.05 : index * 0.1, duration: isMobile ? 0.3 : 0.6 }}
+              transition={{ delay: index * 0.1, duration: 0.6 }}
               layout
             >
               <ProductCard 
@@ -126,15 +116,6 @@ const Gallery: React.FC = () => {
             </motion.div>
           ))}
         </motion.div>
-
-        {/* Load More Button for Mobile */}
-        {isMobile && filteredAndSortedProducts.length > 6 && (
-          <div className="text-center mt-8">
-            <button className="bg-slate-800 text-white px-6 py-3 rounded-full font-medium">
-              Load More ({filteredAndSortedProducts.length - 6} remaining)
-            </button>
-          </div>
-        )}
 
         {/* Results count */}
         <motion.div

@@ -1,23 +1,8 @@
 import React from 'react';
-import { useState, useEffect } from 'react';
 import { ArrowRight } from 'lucide-react';
 import { collections } from '../data/collections';
 
 const Collections: React.FC = () => {
-  const [isMobile, setIsMobile] = useState(false);
-  const [imagesLoaded, setImagesLoaded] = useState<{ [key: string]: boolean }>({});
-
-  useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth < 768);
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
-
-  const handleImageLoad = (collectionId: string) => {
-    setImagesLoaded(prev => ({ ...prev, [collectionId]: true }));
-  };
-
   return (
     <section className="py-20 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -34,21 +19,11 @@ const Collections: React.FC = () => {
         {/* Collections Grid - Collage Style */}
         <div className="grid grid-cols-12 gap-4 h-[600px]">
           {/* Large featured collection */}
-          <div className={`col-span-12 md:col-span-4 row-span-2 relative group overflow-hidden rounded-2xl transition-transform duration-300 ${
-            !isMobile ? 'md:hover:scale-105' : ''
-          }`}>
-            {!imagesLoaded[collections[0].id] && (
-              <div className="absolute inset-0 bg-gray-200 animate-pulse" />
-            )}
+          <div className="col-span-12 md:col-span-4 row-span-2 relative group overflow-hidden rounded-2xl md:hover:scale-105 transition-transform duration-300">
             <img
               src={collections[0].image}
               alt={collections[0].title}
-              className={`w-full h-full object-cover transition-transform duration-700 ${
-                !isMobile ? 'md:group-hover:scale-110' : ''
-              } ${imagesLoaded[collections[0].id] ? 'opacity-100' : 'opacity-0'}`}
-              onLoad={() => handleImageLoad(collections[0].id)}
-              loading="lazy"
-              decoding="async"
+              className="w-full h-full object-cover md:group-hover:scale-110 transition-transform duration-700"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
             <div className="absolute bottom-6 left-6 right-6 text-white">
@@ -65,21 +40,11 @@ const Collections: React.FC = () => {
           </div>
 
           {/* Medium collections */}
-          <div className={`col-span-12 md:col-span-4 relative group overflow-hidden rounded-xl transition-transform duration-300 ${
-            !isMobile ? 'md:hover:scale-105' : ''
-          }`}>
-            {!imagesLoaded[collections[1].id] && (
-              <div className="absolute inset-0 bg-gray-200 animate-pulse" />
-            )}
+          <div className="col-span-12 md:col-span-4 relative group overflow-hidden rounded-xl md:hover:scale-105 transition-transform duration-300">
             <img
               src={collections[1].image}
               alt={collections[1].title}
-              className={`w-full h-full object-cover transition-transform duration-700 ${
-                !isMobile ? 'md:group-hover:scale-110' : ''
-              } ${imagesLoaded[collections[1].id] ? 'opacity-100' : 'opacity-0'}`}
-              onLoad={() => handleImageLoad(collections[1].id)}
-              loading="lazy"
-              decoding="async"
+              className="w-full h-full object-cover md:group-hover:scale-110 transition-transform duration-700"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
             <div className="absolute bottom-4 left-4 right-4 text-white">
@@ -91,21 +56,11 @@ const Collections: React.FC = () => {
             </div>
           </div>
 
-          <div className={`col-span-12 md:col-span-4 relative group overflow-hidden rounded-xl transition-transform duration-300 ${
-            !isMobile ? 'md:hover:scale-105' : ''
-          }`}>
-            {!imagesLoaded[collections[2].id] && (
-              <div className="absolute inset-0 bg-gray-200 animate-pulse" />
-            )}
+          <div className="col-span-12 md:col-span-4 relative group overflow-hidden rounded-xl md:hover:scale-105 transition-transform duration-300">
             <img
               src={collections[2].image}
               alt={collections[2].title}
-              className={`w-full h-full object-cover transition-transform duration-700 ${
-                !isMobile ? 'md:group-hover:scale-110' : ''
-              } ${imagesLoaded[collections[2].id] ? 'opacity-100' : 'opacity-0'}`}
-              onLoad={() => handleImageLoad(collections[2].id)}
-              loading="lazy"
-              decoding="async"
+              className="w-full h-full object-cover md:group-hover:scale-110 transition-transform duration-700"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
             <div className="absolute bottom-4 left-4 right-4 text-white">
@@ -118,21 +73,11 @@ const Collections: React.FC = () => {
           </div>
 
           {/* Small collections */}
-          <div className={`col-span-6 md:col-span-2 relative group overflow-hidden rounded-xl transition-transform duration-300 ${
-            !isMobile ? 'md:hover:scale-110' : ''
-          }`}>
-            {!imagesLoaded[collections[3].id] && (
-              <div className="absolute inset-0 bg-gray-200 animate-pulse" />
-            )}
+          <div className="col-span-6 md:col-span-2 relative group overflow-hidden rounded-xl md:hover:scale-110 transition-transform duration-300">
             <img
               src={collections[3].image}
               alt={collections[3].title}
-              className={`w-full h-full object-cover transition-transform duration-700 ${
-                !isMobile ? 'md:group-hover:scale-110' : ''
-              } ${imagesLoaded[collections[3].id] ? 'opacity-100' : 'opacity-0'}`}
-              onLoad={() => handleImageLoad(collections[3].id)}
-              loading="lazy"
-              decoding="async"
+              className="w-full h-full object-cover md:group-hover:scale-110 transition-transform duration-700"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
             <div className="absolute bottom-4 left-4 right-4 text-white">
@@ -141,21 +86,11 @@ const Collections: React.FC = () => {
             </div>
           </div>
 
-          <div className={`col-span-6 md:col-span-2 relative group overflow-hidden rounded-xl transition-transform duration-300 ${
-            !isMobile ? 'md:hover:scale-110' : ''
-          }`}>
-            {!imagesLoaded[collections[4].id] && (
-              <div className="absolute inset-0 bg-gray-200 animate-pulse" />
-            )}
+          <div className="col-span-6 md:col-span-2 relative group overflow-hidden rounded-xl md:hover:scale-110 transition-transform duration-300">
             <img
               src={collections[4].image}
               alt={collections[4].title}
-              className={`w-full h-full object-cover transition-transform duration-700 ${
-                !isMobile ? 'md:group-hover:scale-110' : ''
-              } ${imagesLoaded[collections[4].id] ? 'opacity-100' : 'opacity-0'}`}
-              onLoad={() => handleImageLoad(collections[4].id)}
-              loading="lazy"
-              decoding="async"
+              className="w-full h-full object-cover md:group-hover:scale-110 transition-transform duration-700"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
             <div className="absolute bottom-4 left-4 right-4 text-white">
@@ -164,21 +99,11 @@ const Collections: React.FC = () => {
             </div>
           </div>
 
-          <div className={`col-span-12 md:col-span-2 relative group overflow-hidden rounded-xl transition-transform duration-300 ${
-            !isMobile ? 'md:hover:scale-105' : ''
-          }`}>
-            {!imagesLoaded[collections[5].id] && (
-              <div className="absolute inset-0 bg-gray-200 animate-pulse" />
-            )}
+          <div className="col-span-12 md:col-span-2 relative group overflow-hidden rounded-xl md:hover:scale-105 transition-transform duration-300">
             <img
               src={collections[5].image}
               alt={collections[5].title}
-              className={`w-full h-full object-cover transition-transform duration-700 ${
-                !isMobile ? 'md:group-hover:scale-110' : ''
-              } ${imagesLoaded[collections[5].id] ? 'opacity-100' : 'opacity-0'}`}
-              onLoad={() => handleImageLoad(collections[5].id)}
-              loading="lazy"
-              decoding="async"
+              className="w-full h-full object-cover md:group-hover:scale-110 transition-transform duration-700"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
             <div className="absolute bottom-4 left-4 right-4 text-white">
@@ -190,9 +115,7 @@ const Collections: React.FC = () => {
 
         {/* View All Button */}
         <div className="text-center mt-12">
-          <button className={`bg-slate-800 text-white px-8 py-4 rounded-full font-medium transition-all duration-300 inline-flex items-center space-x-2 ${
-            !isMobile ? 'md:hover:bg-slate-700 md:hover:scale-105 md:hover:-translate-y-1' : ''
-          }`}>
+          <button className="bg-slate-800 text-white px-8 py-4 rounded-full font-medium md:hover:bg-slate-700 transition-all duration-300 inline-flex items-center space-x-2 md:hover:scale-105 md:hover:-translate-y-1">
             <span>View All Collections</span>
             <ArrowRight size={20} />
           </button>

@@ -50,8 +50,6 @@ body {
 img {
   image-rendering: -webkit-optimize-contrast;
   image-rendering: crisp-edges;
-  content-visibility: auto;
-  contain-intrinsic-size: 300px 200px;
 }
 
 /* Prevent layout shift during loading */
@@ -67,28 +65,5 @@ img {
   }
   100% {
     background-position: -200% 0;
-  }
-}
-
-/* Mobile performance optimizations */
-@media (max-width: 768px) {
-  * {
-    -webkit-transform: translateZ(0);
-    transform: translateZ(0);
-  }
-  
-  .motion-reduce {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-  }
-  
-  /* Reduce motion for users who prefer it */
-  @media (prefers-reduced-motion: reduce) {
-    * {
-      animation-duration: 0.01ms !important;
-      animation-iteration-count: 1 !important;
-      transition-duration: 0.01ms !important;
-    }
   }
 }
