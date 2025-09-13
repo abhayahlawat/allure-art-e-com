@@ -35,7 +35,6 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onViewDetails }) => 
   return (
     <motion.div
       className="group relative bg-white rounded-2xl shadow-md overflow-hidden md:hover:shadow-xl transition-all duration-500"
-      whileHover={{ y: window.innerWidth >= 768 ? -8 : 0, scale: window.innerWidth >= 768 ? 1.02 : 1 }}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6 }}
