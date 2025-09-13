@@ -13,6 +13,15 @@ interface ProductCardProps {
 const ProductCard: React.FC<ProductCardProps> = ({ product, onViewDetails }) => {
   const { addToCart } = useCart();
   const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
+  const [isMobile, setIsMobile] = useState(false);
+  const [imageLoaded, setImageLoaded] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -34,59 +43,70 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onViewDetails }) => 
 
   return (
     <motion.div
-      className="group relative bg-white rounded-2xl shadow-md overflow-hidden md:hover:shadow-xl transition-all duration-500"
+      className={`group relative bg-white rounded-2xl shadow-md overflow-hidden transition-all duration-500 ${
+        !isMobile ? 'md:hover:shadow-xl' : ''
+      }`}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6 }}
+      transition={{ duration: isMobile ? 0.3 : 0.6 }}
     >
       <div className="relative aspect-[4/3] overflow-hidden">
+        {!imageLoaded && (
+          <div className="absolute inset-0 bg-gray-200 animate-pulse" />
+        )}
         <motion.img
           src={product.image}
           alt={product.title}
-          className="w-full h-full object-cover md:group-hover:scale-110 transition-transform duration-700"
-          whileHover={{ scale: window.innerWidth >= 768 ? 1.1 : 1 }}
+          className={`w-full h-full object-cover transition-transform duration-700 ${
+            !isMobile ? 'md:group-hover:scale-110' : ''
+          } ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
+          onLoad={() => setImageLoaded(true)}
+          loading="lazy"
+          decoding="async"
         />
         
         {/* Overlay on hover (desktop) */}
-        <motion.div
-          className="hidden md:flex absolute inset-0 bg-black/40 opacity-0 md:group-hover:opacity-100 transition-opacity duration-300 items-center justify-center space-x-3"
-          initial={{ opacity: 0 }}
-          whileHover={{ opacity: 1 }}
-        >
-          <motion.button
-            onClick={handleViewDetails}
-            className="bg-white/90 backdrop-blur-sm p-2 rounded-full hover:bg-white transition-colors duration-300"
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.95 }}
+        {!isMobile && (
+          <motion.div
+            className="hidden md:flex absolute inset-0 bg-black/40 opacity-0 md:group-hover:opacity-100 transition-opacity duration-300 items-center justify-center space-x-3"
+            initial={{ opacity: 0 }}
+            whileHover={{ opacity: 1 }}
           >
-            <Eye size={16} className="text-slate-700" />
-          </motion.button>
-          
-          <motion.button
-            onClick={handleWishlistToggle}
-            className="bg-white/90 backdrop-blur-sm p-2 rounded-full hover:bg-white transition-colors duration-300"
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            <Heart 
-              size={16} 
-              className={`transition-colors duration-300 ${
-                isInWishlist(product.id) 
-                  ? 'text-red-500 fill-red-500' 
-                  : 'text-slate-700'
-              }`} 
-            />
-          </motion.button>
-          
-          <motion.button
-            onClick={handleAddToCart}
-            className="bg-slate-800 text-white p-2 rounded-full hover:bg-slate-700 transition-colors duration-300"
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            <ShoppingBag size={16} />
-          </motion.button>
-        </motion.div>
+            <motion.button
+              onClick={handleViewDetails}
+              className="bg-white/90 backdrop-blur-sm p-2 rounded-full hover:bg-white transition-colors duration-300"
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <Eye size={16} className="text-slate-700" />
+            </motion.button>
+            
+            <motion.button
+              onClick={handleWishlistToggle}
+              className="bg-white/90 backdrop-blur-sm p-2 rounded-full hover:bg-white transition-colors duration-300"
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <Heart 
+                size={16} 
+                className={`transition-colors duration-300 ${
+                  isInWishlist(product.id) 
+                    ? 'text-red-500 fill-red-500' 
+                    : 'text-slate-700'
+                }`} 
+              />
+            </motion.button>
+            
+            <motion.button
+              onClick={handleAddToCart}
+              className="bg-slate-800 text-white p-2 rounded-full hover:bg-slate-700 transition-colors duration-300"
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <ShoppingBag size={16} />
+            </motion.button>
+          </motion.div>
+        )}
 
         {/* Mobile action buttons */}
         <div className="md:hidden absolute top-3 right-3 flex flex-col space-y-2">

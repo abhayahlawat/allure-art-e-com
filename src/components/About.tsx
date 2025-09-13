@@ -1,8 +1,18 @@
 import React from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Award, Heart, Palette, Users } from 'lucide-react';
 
 const About: React.FC = () => {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
   const features = [
     {
       icon: <Palette size={32} />,
@@ -35,7 +45,7 @@ const About: React.FC = () => {
             className="space-y-8"
             initial={{ opacity: 0, x: -50 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8 }}
+            transition={{ duration: isMobile ? 0.4 : 0.8 }}
           >
             <div className="space-y-6">
               <h2 className="text-3xl sm:text-4xl md:text-5xl font-light text-slate-800">
@@ -51,6 +61,8 @@ const About: React.FC = () => {
 
             <motion.button
               className="bg-slate-800 text-white px-8 py-4 rounded-full font-medium hover:bg-slate-700 transition-colors duration-300"
+              whileHover={isMobile ? {} : { scale: 1.05, y: -2 }}
+              whileTap={{ scale: 0.98 }}
             >
               Learn More About Our Mission
             </motion.button>
@@ -61,7 +73,7 @@ const About: React.FC = () => {
             className="grid grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 gap-4 sm:gap-6"
             initial={{ opacity: 0, x: 50 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.3, duration: 0.8 }}
+            transition={{ delay: 0.3, duration: isMobile ? 0.4 : 0.8 }}
           >
             {features.map((feature, index) => (
               <motion.div
@@ -69,8 +81,8 @@ const About: React.FC = () => {
                 className="bg-white/70 backdrop-blur-sm p-4 sm:p-6 rounded-2xl hover:bg-white/90 transition-all duration-300"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4 + index * 0.1, duration: 0.6 }}
-                whileHover={{ y: -5, scale: 1.02 }}
+                transition={{ delay: 0.4 + index * (isMobile ? 0.05 : 0.1), duration: isMobile ? 0.3 : 0.6 }}
+                whileHover={isMobile ? {} : { y: -5, scale: 1.02 }}
               >
                 <div className="text-slate-700 mb-3 sm:mb-4">{feature.icon}</div>
                 <h3 className="text-lg sm:text-xl font-semibold text-slate-800 mb-2 sm:mb-3">

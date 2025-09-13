@@ -9,6 +9,14 @@ const Hero: React.FC = () => {
   const [isLoaded, setIsLoaded] = useState(true);
   const [imagesLoaded, setImagesLoaded] = useState<{ [key: number]: boolean }>({});
   const [allImagesPreloaded, setAllImagesPreloaded] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   useEffect(() => {
     // Preload all hero images
@@ -33,12 +41,14 @@ const Hero: React.FC = () => {
   }, []);
 
   useEffect(() => {
+    // Reduce auto-play frequency on mobile to save battery
+    const interval = isMobile ? 8000 : 5000;
     const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % heroSlides.length);
-    }, 5000);
+    }, interval);
 
     return () => clearInterval(timer);
-  }, []);
+  }, [isMobile]);
 
   const nextSlide = () => {
     setCurrentSlide((prev) => (prev + 1) % heroSlides.length);
@@ -88,7 +98,7 @@ const Hero: React.FC = () => {
                 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl 2xl:text-7xl font-light text-slate-800 leading-tight"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.1, duration: 0.5 }}
+                transition={{ delay: 0.1, duration: isMobile ? 0.3 : 0.5 }}
               >
                 {currentSlideData.title}
                 <br />
@@ -101,7 +111,7 @@ const Hero: React.FC = () => {
                 className="text-sm sm:text-base md:text-lg lg:text-xl text-slate-600 max-w-lg leading-relaxed"
                 initial={{ opacity: 0, y: 15 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2, duration: 0.5 }}
+                transition={{ delay: 0.2, duration: isMobile ? 0.3 : 0.5 }}
               >
                 {currentSlideData.description}
               </motion.p>
@@ -111,10 +121,10 @@ const Hero: React.FC = () => {
               className="flex flex-col sm:flex-row gap-3 sm:gap-4"
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3, duration: 0.5 }}
+              transition={{ delay: 0.3, duration: isMobile ? 0.3 : 0.5 }}
             >
               <motion.div
-                whileHover={{ scale: 1.05, y: -2 }}
+                whileHover={isMobile ? {} : { scale: 1.05, y: -2 }}
                 whileTap={{ scale: 0.98 }}
               >
                 <Link
@@ -127,7 +137,7 @@ const Hero: React.FC = () => {
               </motion.div>
 
               <motion.div
-                whileHover={{ scale: 1.05, y: -2 }}
+                whileHover={isMobile ? {} : { scale: 1.05, y: -2 }}
                 whileTap={{ scale: 0.98 }}
               >
                 <Link
@@ -168,18 +178,21 @@ const Hero: React.FC = () => {
                     key={slide.id}
                     src={slide.image}
                     alt="Featured Artwork"
-                    className="absolute inset-0 w-full h-full object-cover rounded-xl sm:rounded-2xl shadow-lg sm:shadow-xl md:shadow-2xl group-hover:shadow-xl sm:group-hover:shadow-2xl md:group-hover:shadow-3xl transition-all duration-500"
+                    className={`absolute inset-0 w-full h-full object-cover rounded-xl sm:rounded-2xl shadow-lg sm:shadow-xl md:shadow-2xl transition-all duration-500 ${
+                      !isMobile ? 'group-hover:shadow-xl sm:group-hover:shadow-2xl md:group-hover:shadow-3xl' : ''
+                    }`}
                     initial={{ opacity: 0, scale: 1.05 }}
                     animate={{ 
                       opacity: index === currentSlide ? 1 : 0,
                       scale: index === currentSlide ? 1 : 1.05
                     }}
                     transition={{ 
-                      duration: 0.7,
+                      duration: isMobile ? 0.5 : 0.7,
                       ease: [0.25, 0.46, 0.45, 0.94]
                     }}
-                    whileHover={{ scale: 1.02, rotate: 1 }}
+                    whileHover={isMobile ? {} : { scale: 1.02, rotate: 1 }}
                     loading={index === 0 ? "eager" : "lazy"}
+                    decoding="async"
                   />
                 ))}
               </div>
