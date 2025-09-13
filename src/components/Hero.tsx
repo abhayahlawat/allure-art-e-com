@@ -9,6 +9,7 @@ const Hero: React.FC = () => {
   const [isLoaded, setIsLoaded] = useState(true);
   const [imagesLoaded, setImagesLoaded] = useState<{ [key: number]: boolean }>({});
   const [allImagesPreloaded, setAllImagesPreloaded] = useState(false);
+  const [isTransitioning, setIsTransitioning] = useState(false);
 
   useEffect(() => {
     // Preload all hero images
@@ -33,19 +34,27 @@ const Hero: React.FC = () => {
   }, []);
 
   useEffect(() => {
+    if (!allImagesPreloaded) return;
+    
     const timer = setInterval(() => {
+      setIsTransitioning(true);
       setCurrentSlide((prev) => (prev + 1) % heroSlides.length);
+      setTimeout(() => setIsTransitioning(false), 100);
     }, 5000);
 
     return () => clearInterval(timer);
-  }, []);
+  }, [allImagesPreloaded]);
 
   const nextSlide = () => {
+    setIsTransitioning(true);
     setCurrentSlide((prev) => (prev + 1) % heroSlides.length);
+    setTimeout(() => setIsTransitioning(false), 100);
   };
 
   const prevSlide = () => {
+    setIsTransitioning(true);
     setCurrentSlide((prev) => (prev - 1 + heroSlides.length) % heroSlides.length);
+    setTimeout(() => setIsTransitioning(false), 100);
   };
 
   const currentSlideData = heroSlides[currentSlide];
@@ -157,33 +166,64 @@ const Hero: React.FC = () => {
               
               {/* Image container with smooth transitions */}
               <div className="relative w-full max-w-[280px] sm:max-w-xs md:max-w-sm lg:max-w-md mx-auto h-[350px] sm:h-[400px] md:h-[450px] rounded-xl sm:rounded-2xl overflow-hidden">
-                {/* Loading placeholder */}
+                {/* Skeleton loader */}
                 {!allImagesPreloaded && (
-                  <div className="absolute inset-0 bg-gradient-to-br from-pastel-lavender to-pastel-cream animate-pulse rounded-xl sm:rounded-2xl" />
+                  <div className="absolute inset-0 bg-gradient-to-br from-gray-200 via-gray-100 to-gray-200 rounded-xl sm:rounded-2xl overflow-hidden">
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent animate-shimmer" 
+                         style={{
+                           backgroundSize: '200% 100%',
+                           animation: 'shimmer 2s infinite'
+                         }} />
+                    <div className="absolute bottom-2 left-2 right-2 sm:bottom-3 sm:left-3 sm:right-3 md:bottom-4 md:left-4 md:right-4 bg-gray-200 rounded-md sm:rounded-lg p-2 sm:p-3 md:p-4">
+                      <div className="h-3 sm:h-4 bg-gray-300 rounded mb-1 sm:mb-2 animate-pulse" />
+                      <div className="h-2 sm:h-3 bg-gray-300 rounded w-2/3 animate-pulse" />
+                    </div>
+                  </div>
                 )}
                 
-                {/* All images layered for smooth transitions */}
-                {heroSlides.map((slide, index) => (
-                  <motion.img
-                    key={slide.id}
-                    src={slide.image}
-                    alt="Featured Artwork"
-                    className="absolute inset-0 w-full h-full object-cover rounded-xl sm:rounded-2xl shadow-lg sm:shadow-xl md:shadow-2xl group-hover:shadow-xl sm:group-hover:shadow-2xl md:group-hover:shadow-3xl transition-all duration-500"
-                    initial={{ x: '100%' }}
+                {/* Image slider container */}
+                <div className="absolute inset-0">
+                  <motion.div
+                    className="flex h-full"
                     animate={{ 
-                      x: index === currentSlide ? '0%' : 
-                         index < currentSlide ? '-100%' : '100%',
-                      opacity: index === currentSlide ? 1 : 0
+                      x: `-${currentSlide * 100}%`
                     }}
                     transition={{ 
-                      duration: 0.8,
-                      ease: [0.25, 0.46, 0.45, 0.94],
+                      duration: 0.6,
+                      ease: [0.23, 1, 0.32, 1],
                       type: 'tween'
                     }}
-                    whileHover={{ scale: 1.02, rotate: 1 }}
-                    loading={index === 0 ? "eager" : "lazy"}
-                  />
-                ))}
+                  >
+                    {heroSlides.map((slide, index) => (
+                      <div
+                        key={slide.id}
+                        className="relative flex-shrink-0 w-full h-full"
+                      >
+                        {/* Individual image skeleton */}
+                        {!imagesLoaded[index] && allImagesPreloaded && (
+                          <div className="absolute inset-0 bg-gradient-to-br from-gray-200 via-gray-100 to-gray-200 rounded-xl sm:rounded-2xl">
+                            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent animate-shimmer" 
+                                 style={{
+                                   backgroundSize: '200% 100%',
+                                   animation: 'shimmer 1.5s infinite'
+                                 }} />
+                          </div>
+                        )}
+                        
+                        <motion.img
+                          src={slide.image}
+                          alt="Featured Artwork"
+                          className={`w-full h-full object-cover rounded-xl sm:rounded-2xl shadow-lg sm:shadow-xl md:shadow-2xl transition-all duration-500 ${
+                            imagesLoaded[index] ? 'opacity-100' : 'opacity-0'
+                          }`}
+                          onLoad={() => setImagesLoaded(prev => ({ ...prev, [index]: true }))}
+                          whileHover={{ scale: 1.02, rotate: 1 }}
+                          loading={index === 0 ? "eager" : "lazy"}
+                        />
+                      </div>
+                    ))}
+                  </motion.div>
+                </div>
               </div>
               
               <motion.div
