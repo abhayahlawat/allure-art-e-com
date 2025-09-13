@@ -125,7 +125,6 @@ const AllureLoader: React.FC<AllureLoaderProps> = ({
               >
                 Curating extraordinary art experiences
               </motion.p>
-              </motion.p>
             </div>
 
             {/* Loading dots */}
