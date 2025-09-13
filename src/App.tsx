@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
+import MultiStepLoader from './components/MultiStepLoader';
 import { CartProvider } from './context/CartContext';
 import { WishlistProvider } from './context/WishlistContext';
 import Header from './components/Header';
@@ -88,6 +89,7 @@ const AppContent: React.FC<{ onCartOpen: () => void; isCartOpen: boolean; onCart
 
 function App() {
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   // Prevent scroll restoration on page reload
   React.useEffect(() => {
@@ -104,6 +106,14 @@ function App() {
   const handleCartClose = () => {
     setIsCartOpen(false);
   };
+
+  const handleLoadingComplete = () => {
+    setIsLoading(false);
+  };
+
+  if (isLoading) {
+    return <MultiStepLoader onComplete={handleLoadingComplete} />;
+  }
 
   return (
     <Router>
