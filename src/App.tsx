@@ -15,7 +15,6 @@ import ContactPage from './pages/ContactPage';
 import WishlistPage from './pages/WishlistPage';
 import LoginPage from './pages/LoginPage';
 import { Transition } from "framer-motion";
-import InstallPrompt from './components/InstallPrompt';
 
 // Page transition variants
 const pageVariants = {
@@ -85,7 +84,6 @@ const AppContent: React.FC<{ onCartOpen: () => void; isCartOpen: boolean; onCart
       
       {!isLoginPage && <Footer />}
       <Cart isOpen={isCartOpen} onClose={onCartClose} />
-      <InstallPrompt />
     </div>
   );
 };
