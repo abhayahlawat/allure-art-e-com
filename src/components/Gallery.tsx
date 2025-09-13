@@ -104,16 +104,25 @@ const Gallery: React.FC = () => {
                 {/* Sort Dropdown */}
                 <div className="flex items-center space-x-2">
                   <span className="text-sm font-medium text-slate-700">Sort:</span>
-                  <select
-                    value={sortBy}
-                    onChange={(e) => setSortBy(e.target.value)}
-                    className="px-4 py-2 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-slate-300 focus:border-transparent text-sm font-medium text-slate-700 cursor-pointer"
-                  >
-                    <option value="name">Name A-Z</option>
-                    <option value="price-low">Price: Low to High</option>
-                    <option value="price-high">Price: High to Low</option>
-                    <option value="year">Newest First</option>
-                  </select>
+                  <div className="relative">
+                    <motion.select
+                      value={sortBy}
+                      onChange={(e) => setSortBy(e.target.value)}
+                      className="px-4 py-2 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-slate-300 focus:border-transparent text-sm font-medium text-slate-700 cursor-pointer appearance-none pr-8"
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                    >
+                      <option value="name">Name A-Z</option>
+                      <option value="price-low">Price: Low to High</option>
+                      <option value="price-high">Price: High to Low</option>
+                      <option value="year">Newest First</option>
+                    </motion.select>
+                    <div className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
+                      <svg className="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -127,7 +136,7 @@ const Gallery: React.FC = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2, duration: 0.6 }}
         >
-          <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
+          <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-gray-100">
             {/* Header */}
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center space-x-3">
@@ -141,54 +150,56 @@ const Gallery: React.FC = () => {
               </span>
             </div>
 
-            {/* Category Filter */}
-            <div className="mb-6">
+            {/* Category Dropdown */}
+            <div className="mb-4">
               <label className="block text-sm font-medium text-slate-700 mb-3">
                 Category
               </label>
-              <div className="grid grid-cols-2 gap-2">
-                {categories.map(category => (
-                  <motion.button
-                    key={category}
-                    onClick={() => setSelectedCategory(category)}
-                    className={`p-3 rounded-xl text-sm font-medium transition-all duration-300 ${
-                      selectedCategory === category
-                        ? 'bg-slate-800 text-white shadow-md'
-                        : 'bg-gray-50 text-slate-700 border border-gray-200'
-                    }`}
-                    whileTap={{ scale: 0.95 }}
-                  >
-                    {category}
-                  </motion.button>
-                ))}
+              <div className="relative">
+                <motion.select
+                  value={selectedCategory}
+                  onChange={(e) => setSelectedCategory(e.target.value)}
+                  className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-slate-300 focus:border-transparent text-sm font-medium text-slate-700 appearance-none pr-10"
+                  whileHover={{ scale: 1.01 }}
+                  whileTap={{ scale: 0.99 }}
+                >
+                  {categories.map(category => (
+                    <option key={category} value={category}>
+                      {category}
+                    </option>
+                  ))}
+                </motion.select>
+                <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                  <svg className="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </div>
               </div>
             </div>
 
-            {/* Sort Options */}
+            {/* Sort Dropdown */}
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-3">
                 Sort by
               </label>
-              <div className="grid grid-cols-1 gap-2">
-                {[
-                  { value: 'name', label: 'Name A-Z' },
-                  { value: 'price-low', label: 'Price: Low to High' },
-                  { value: 'price-high', label: 'Price: High to Low' },
-                  { value: 'year', label: 'Newest First' }
-                ].map(option => (
-                  <motion.button
-                    key={option.value}
-                    onClick={() => setSortBy(option.value)}
-                    className={`p-3 rounded-xl text-sm font-medium text-left transition-all duration-300 ${
-                      sortBy === option.value
-                        ? 'bg-slate-800 text-white shadow-md'
-                        : 'bg-gray-50 text-slate-700 border border-gray-200'
-                    }`}
-                    whileTap={{ scale: 0.95 }}
-                  >
-                    {option.label}
-                  </motion.button>
-                ))}
+              <div className="relative">
+                <motion.select
+                  value={sortBy}
+                  onChange={(e) => setSortBy(e.target.value)}
+                  className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-slate-300 focus:border-transparent text-sm font-medium text-slate-700 appearance-none pr-10"
+                  whileHover={{ scale: 1.01 }}
+                  whileTap={{ scale: 0.99 }}
+                >
+                  <option value="name">Name A-Z</option>
+                  <option value="price-low">Price: Low to High</option>
+                  <option value="price-high">Price: High to Low</option>
+                  <option value="year">Newest First</option>
+                </motion.select>
+                <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                  <svg className="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </div>
               </div>
             </div>
           </div>
