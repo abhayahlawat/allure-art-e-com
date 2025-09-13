@@ -11,10 +11,6 @@ const AllureLoader: React.FC<AllureLoaderProps> = ({
   minDisplayMs = 2500 
 }) => {
   const [shouldShow, setShouldShow] = useState(loading);
-  const [displayedText, setDisplayedText] = useState('');
-  const [showCursor, setShowCursor] = useState(true);
-  
-  const brandText = 'Allure Art';
 
   // Handle minimum display time
   useEffect(() => {
@@ -27,34 +23,6 @@ const AllureLoader: React.FC<AllureLoaderProps> = ({
       setShouldShow(true);
     }
   }, [loading, shouldShow, minDisplayMs]);
-
-  // Handwritten typewriter effect
-  useEffect(() => {
-    if (!shouldShow) return;
-
-    let currentIndex = 0;
-    setDisplayedText('');
-    
-    const typeInterval = setInterval(() => {
-      if (currentIndex < brandText.length) {
-        setDisplayedText(brandText.slice(0, currentIndex + 1));
-        currentIndex++;
-      } else {
-        clearInterval(typeInterval);
-      }
-    }, 150); // 150ms per character for handwritten feel
-
-    return () => clearInterval(typeInterval);
-  }, [shouldShow, brandText]);
-
-  // Cursor blinking effect
-  useEffect(() => {
-    const cursorInterval = setInterval(() => {
-      setShowCursor(prev => !prev);
-    }, 530);
-
-    return () => clearInterval(cursorInterval);
-  }, []);
 
   return (
     <AnimatePresence>
@@ -98,9 +66,97 @@ const AllureLoader: React.FC<AllureLoaderProps> = ({
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.3 }}
           >
-            {/* Brand name with handwritten animation */}
+            {/* Brand name with handwritten drawing animation */}
             <div className="relative">
-              <motion.h1
+              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-cursive text-white font-medium tracking-wide">
+                <motion.span
+                  className="inline-block"
+                  initial={{ 
+                    pathLength: 0,
+                    opacity: 0
+                  }}
+                  animate={{ 
+                    pathLength: 1,
+                    opacity: 1
+                  }}
+                  transition={{ 
+                    pathLength: { duration: 2.5, ease: "easeInOut" },
+                    opacity: { duration: 0.3, delay: 0.2 }
+                  }}
+                  style={{
+                    background: 'linear-gradient(90deg, transparent 0%, white 50%, transparent 100%)',
+                    backgroundSize: '200% 100%',
+                    backgroundClip: 'text',
+                    WebkitBackgroundClip: 'text',
+                    animation: 'handwrite 2.5s ease-in-out forwards'
+                  }}
+                >
+                  Allure Art
+                </motion.span>
+              </h1>
+              
+              {/* Handwritten underline effect */}
+              <motion.div
+                className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 h-0.5 bg-gradient-to-r from-pastel-sage to-pastel-blush"
+                initial={{ width: 0, scaleX: 0 }}
+                animate={{ width: '100%', scaleX: 1 }}
+                transition={{ 
+                  duration: 1.5, 
+                  delay: 2.8, 
+                  ease: "easeInOut" 
+                }}
+                style={{
+                  transformOrigin: 'left center'
+                }}
+              />
+            </div>
+
+            {/* Subtitle */}
+            <motion.p
+              className="text-lg sm:text-xl text-gray-300 font-light"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 3.2 }}
+            >
+              Curating extraordinary art experiences
+            </motion.p>
+
+            {/* Loading dots */}
+            <motion.div
+              className="flex justify-center space-x-2"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.5, delay: 3.8 }}
+            >
+              {[0, 1, 2].map((index) => (
+                <motion.div
+                  key={index}
+                  className="w-2 h-2 bg-white rounded-full"
+                  animate={{
+                    scale: [1, 1.5, 1],
+                    opacity: [0.5, 1, 0.5]
+                  }}
+                  transition={{
+                    duration: 1.5,
+                    repeat: Infinity,
+                    delay: index * 0.2
+                  }}
+                />
+              ))}
+            </motion.div>
+          </motion.div>
+
+          {/* Screen reader text */}
+          <span className="sr-only">
+            Loading Allure Art gallery. Please wait while we prepare your art experience.
+          </span>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+};
+
+export default AllureLoader;
                 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-cursive text-white font-medium tracking-wide"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}

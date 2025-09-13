@@ -52,6 +52,21 @@ img {
   image-rendering: crisp-edges;
 }
 
+/* Handwritten animation */
+@keyframes handwrite {
+  0% {
+    background-position: -200% 0;
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  100% {
+    background-position: 200% 0;
+    opacity: 1;
+  }
+}
+
 /* Prevent layout shift during loading */
 .loading-placeholder {
   background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
