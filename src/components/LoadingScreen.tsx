@@ -77,38 +77,50 @@ const LoadingScreen: React.FC = () => {
             className="mx-auto"
             style={{ filter: 'drop-shadow(2px 2px 4px rgba(0,0,0,0.1))' }}
           >
-            {/* Allure */}
-            <motion.path
-              d="M20 80 Q30 40 50 60 Q70 80 90 50 Q100 40 110 60 Q120 80 130 60 Q140 50 150 70 Q160 85 170 70"
-              stroke="#1e293b"
-              strokeWidth="3"
+            {/* Allure Text */}
+            <motion.text
+              x="50"
+              y="70"
+              fontSize="48"
+              fontFamily="Dancing Script, cursive"
+              fontWeight="600"
               fill="none"
+              stroke="#1e293b"
+              strokeWidth="2"
               strokeLinecap="round"
               strokeLinejoin="round"
               variants={pathVariants}
               initial="hidden"
               animate="visible"
-            />
+            >
+              Allure
+            </motion.text>
             
-            {/* Art */}
-            <motion.path
-              d="M220 80 Q230 40 250 60 Q270 80 290 50 Q300 45 310 65 Q320 80 330 65"
-              stroke="#1e293b"
-              strokeWidth="3"
+            {/* Art Text */}
+            <motion.text
+              x="220"
+              y="70"
+              fontSize="48"
+              fontFamily="Dancing Script, cursive"
+              fontWeight="600"
               fill="none"
+              stroke="#1e293b"
+              strokeWidth="2"
               strokeLinecap="round"
               strokeLinejoin="round"
               variants={pathVariants}
               initial="hidden"
               animate="visible"
               transition={{ delay: 1.5 }}
-            />
+            >
+              Art
+            </motion.text>
 
-            {/* Decorative flourish */}
+            {/* Decorative underline */}
             <motion.path
-              d="M340 65 Q350 55 360 65 Q370 75 380 65"
+              d="M50 85 Q150 90 220 85 Q270 80 320 85"
               stroke="#64748b"
-              strokeWidth="2"
+              strokeWidth="1.5"
               fill="none"
               strokeLinecap="round"
               variants={pathVariants}
@@ -118,15 +130,17 @@ const LoadingScreen: React.FC = () => {
             />
           </svg>
 
-          {/* Fallback text that appears after writing animation */}
-          <motion.h1
-            className="absolute inset-0 flex items-center justify-center text-6xl font-cursive text-slate-800"
+          {/* Filled text that appears after writing animation */}
+          <motion.div
+            className="absolute inset-0 flex items-center justify-center"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 3.5, duration: 0.5 }}
+            transition={{ delay: 3.5, duration: 0.8 }}
           >
-            Allure Art
-          </motion.h1>
+            <h1 className="text-6xl font-cursive text-slate-800 font-semibold">
+              Allure Art
+            </h1>
+          </motion.div>
         </div>
 
         {/* Subtitle */}
