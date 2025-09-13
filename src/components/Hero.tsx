@@ -169,14 +169,16 @@ const Hero: React.FC = () => {
                     src={slide.image}
                     alt="Featured Artwork"
                     className="absolute inset-0 w-full h-full object-cover rounded-xl sm:rounded-2xl shadow-lg sm:shadow-xl md:shadow-2xl group-hover:shadow-xl sm:group-hover:shadow-2xl md:group-hover:shadow-3xl transition-all duration-500"
-                    initial={{ opacity: 0, scale: 1.05 }}
+                    initial={{ x: '100%' }}
                     animate={{ 
-                      opacity: index === currentSlide ? 1 : 0,
-                      scale: index === currentSlide ? 1 : 1.05
+                      x: index === currentSlide ? '0%' : 
+                         index < currentSlide ? '-100%' : '100%',
+                      opacity: index === currentSlide ? 1 : 0
                     }}
                     transition={{ 
-                      duration: 0.7,
-                      ease: [0.25, 0.46, 0.45, 0.94]
+                      duration: 0.8,
+                      ease: [0.25, 0.46, 0.45, 0.94],
+                      type: 'tween'
                     }}
                     whileHover={{ scale: 1.02, rotate: 1 }}
                     loading={index === 0 ? "eager" : "lazy"}
