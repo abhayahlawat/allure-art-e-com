@@ -1,6 +1,103 @@
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { Mail, Phone, MapPin, Clock, Send } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Mail, Phone, MapPin, Clock, Send, ChevronDown } from 'lucide-react';
+
+// Custom Dropdown Component
+interface DropdownProps {
+  label: string;
+  value: string;
+  options: { value: string; label: string }[];
+  onChange: (value: string) => void;
+  placeholder?: string;
+  required?: boolean;
+}
+
+const CustomDropdown: React.FC<DropdownProps> = ({ 
+  label, 
+  value, 
+  options, 
+  onChange, 
+  placeholder = "Select an option",
+  required = false 
+}) => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const selectedOption = options.find(option => option.value === value);
+
+  const handleSelect = (optionValue: string) => {
+    onChange(optionValue);
+    setIsOpen(false);
+  };
+
+  return (
+    <div className="relative z-50">
+      <label className="block text-sm font-medium text-slate-700 mb-2">
+        {label}
+      </label>
+      <motion.button
+        type="button"
+        onClick={() => setIsOpen(!isOpen)}
+        className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-pastel-sage focus:border-transparent text-left font-medium text-slate-700 flex items-center justify-between"
+        whileHover={{ scale: 1.01 }}
+        whileTap={{ scale: 0.99 }}
+      >
+        <span className={selectedOption ? 'text-slate-800' : 'text-slate-500'}>
+          {selectedOption?.label || placeholder}
+        </span>
+        <motion.div
+          animate={{ rotate: isOpen ? 180 : 0 }}
+          transition={{ duration: 0.2 }}
+        >
+          <ChevronDown size={16} />
+        </motion.div>
+      </motion.button>
+
+      <AnimatePresence>
+        {isOpen && (
+          <>
+            {/* Backdrop */}
+            <motion.div
+              className="fixed inset-0 z-40"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsOpen(false)}
+            />
+            
+            {/* Dropdown Menu */}
+            <motion.div
+              className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-xl shadow-lg z-50 overflow-hidden"
+              initial={{ opacity: 0, y: -10, scale: 0.95 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -10, scale: 0.95 }}
+              transition={{ duration: 0.2, ease: "easeOut" }}
+            >
+              <div className="max-h-60 overflow-y-auto">
+                {options.map((option, index) => (
+                  <motion.button
+                    key={option.value}
+                    type="button"
+                    onClick={() => handleSelect(option.value)}
+                    className={`w-full px-4 py-3 text-left text-sm hover:bg-slate-50 transition-colors duration-200 ${
+                      value === option.value ? 'bg-slate-100 text-slate-900 font-medium' : 'text-slate-700'
+                    }`}
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: index * 0.05, duration: 0.2 }}
+                    whileHover={{ backgroundColor: '#f8fafc' }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    {option.label}
+                  </motion.button>
+                ))}
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+};
 
 const ContactPage: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -22,6 +119,14 @@ const ContactPage: React.FC = () => {
     // Handle form submission
     console.log('Form submitted:', formData);
   };
+
+  const subjectOptions = [
+    { value: 'general', label: 'General Inquiry' },
+    { value: 'artwork', label: 'Artwork Question' },
+    { value: 'order', label: 'Order Support' },
+    { value: 'artist', label: 'Artist Collaboration' },
+    { value: 'other', label: 'Other' }
+  ];
 
   const contactInfo = [
     {
@@ -133,24 +238,14 @@ const ContactPage: React.FC = () => {
                 </div>
 
                 <div>
-                  <label htmlFor="subject" className="block text-sm font-medium text-slate-700 mb-2">
-                    Subject
-                  </label>
-                  <select
-                    id="subject"
-                    name="subject"
+                  <CustomDropdown
+                    label="Subject"
                     value={formData.subject}
-                    onChange={handleInputChange}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-pastel-sage focus:border-transparent transition-all duration-300"
+                    options={subjectOptions}
+                    onChange={(value) => setFormData({ ...formData, subject: value })}
+                    placeholder="Select a subject"
                     required
-                  >
-                    <option value="">Select a subject</option>
-                    <option value="general">General Inquiry</option>
-                    <option value="artwork">Artwork Question</option>
-                    <option value="order">Order Support</option>
-                    <option value="artist">Artist Collaboration</option>
-                    <option value="other">Other</option>
-                  </select>
+                  />
                 </div>
 
                 <div>
