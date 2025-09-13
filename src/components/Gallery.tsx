@@ -59,7 +59,7 @@ const CustomDropdown: React.FC<DropdownProps> = ({ label, value, options, onChan
             
             {/* Dropdown Menu */}
             <motion.div
-              className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-xl shadow-lg z-20 overflow-hidden"
+              className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-xl shadow-lg z-50 overflow-hidden"
               initial={{ opacity: 0, y: -10, scale: 0.95 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -10, scale: 0.95 }}
@@ -218,7 +218,7 @@ const Gallery: React.FC = () => {
 
         {/* Mobile Filters */}
         <motion.div
-          className="md:hidden mb-8"
+          className="md:hidden mb-8 relative z-40"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2, duration: 0.6 }}
@@ -258,7 +258,7 @@ const Gallery: React.FC = () => {
 
         {/* Products Grid */}
         <motion.div
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 relative z-10"
           layout
         >
           {filteredAndSortedProducts.map((product, index) => (
