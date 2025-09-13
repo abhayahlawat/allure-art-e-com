@@ -158,12 +158,12 @@ const Gallery: React.FC = () => {
         {/* Filters */}
         {/* Desktop Filters */}
         <motion.div
-          className="hidden md:block mb-12"
+          className="hidden md:block mb-12 relative z-40"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2, duration: 0.6 }}
         >
-          <div className="bg-white/80 backdrop-blur-sm rounded-3xl p-8 shadow-lg border border-gray-100">
+          <div className="bg-white/80 backdrop-blur-sm rounded-3xl p-8 shadow-lg border border-gray-100 relative z-40">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-3">
                 <div className="p-2 bg-slate-100 rounded-xl">
@@ -201,13 +201,13 @@ const Gallery: React.FC = () => {
                 {/* Sort Dropdown */}
                 <div className="flex items-center space-x-2">
                   <span className="text-sm font-medium text-slate-700">Sort:</span>
-                  <div className="relative">
+                  <div className="relative z-50">
                     <CustomDropdown
                       label=""
                       value={sortBy}
                       options={sortOptions}
                       onChange={setSortBy}
-                      className="min-w-[180px]"
+                      className="min-w-[180px] relative z-50"
                     />
                   </div>
                 </div>
