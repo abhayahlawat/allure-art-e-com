@@ -1,10 +1,95 @@
 import React, { useState, useMemo } from 'react';
-import { motion } from 'framer-motion';
-import { Filter } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Filter, ChevronDown } from 'lucide-react';
 import ProductCard from './ProductCard';
 import ProductModal from './ProductModal';
 import { products } from '../data/products';
 import { Product } from '../types';
+
+// Custom Dropdown Component
+interface DropdownProps {
+  label: string;
+  value: string;
+  options: { value: string; label: string }[];
+  onChange: (value: string) => void;
+  className?: string;
+}
+
+const CustomDropdown: React.FC<DropdownProps> = ({ label, value, options, onChange, className = '' }) => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const selectedOption = options.find(option => option.value === value);
+
+  const handleSelect = (optionValue: string) => {
+    onChange(optionValue);
+    setIsOpen(false);
+  };
+
+  return (
+    <div className={`relative ${className}`}>
+      <label className="block text-sm font-medium text-slate-700 mb-2">
+        {label}
+      </label>
+      <motion.button
+        onClick={() => setIsOpen(!isOpen)}
+        className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-slate-300 focus:border-transparent text-sm font-medium text-slate-700 flex items-center justify-between"
+        whileHover={{ scale: 1.01 }}
+        whileTap={{ scale: 0.99 }}
+      >
+        <span>{selectedOption?.label}</span>
+        <motion.div
+          animate={{ rotate: isOpen ? 180 : 0 }}
+          transition={{ duration: 0.2 }}
+        >
+          <ChevronDown size={16} />
+        </motion.div>
+      </motion.button>
+
+      <AnimatePresence>
+        {isOpen && (
+          <>
+            {/* Backdrop */}
+            <motion.div
+              className="fixed inset-0 z-10"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsOpen(false)}
+            />
+            
+            {/* Dropdown Menu */}
+            <motion.div
+              className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-xl shadow-lg z-20 overflow-hidden"
+              initial={{ opacity: 0, y: -10, scale: 0.95 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -10, scale: 0.95 }}
+              transition={{ duration: 0.2, ease: "easeOut" }}
+            >
+              <div className="max-h-60 overflow-y-auto">
+                {options.map((option, index) => (
+                  <motion.button
+                    key={option.value}
+                    onClick={() => handleSelect(option.value)}
+                    className={`w-full px-4 py-3 text-left text-sm hover:bg-slate-50 transition-colors duration-200 ${
+                      value === option.value ? 'bg-slate-100 text-slate-900 font-medium' : 'text-slate-700'
+                    }`}
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: index * 0.05, duration: 0.2 }}
+                    whileHover={{ backgroundColor: '#f8fafc' }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    {option.label}
+                  </motion.button>
+                ))}
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+};
 
 const Gallery: React.FC = () => {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
@@ -13,6 +98,18 @@ const Gallery: React.FC = () => {
   const [sortBy, setSortBy] = useState('name');
 
   const categories = ['All', ...Array.from(new Set(products.map(p => p.category)))];
+  
+  const categoryOptions = categories.map(category => ({
+    value: category,
+    label: category
+  }));
+
+  const sortOptions = [
+    { value: 'name', label: 'Name A-Z' },
+    { value: 'price-low', label: 'Price: Low to High' },
+    { value: 'price-high', label: 'Price: High to Low' },
+    { value: 'year', label: 'Newest First' }
+  ];
 
   const filteredAndSortedProducts = useMemo(() => {
     let filtered = selectedCategory === 'All' 
@@ -105,23 +202,13 @@ const Gallery: React.FC = () => {
                 <div className="flex items-center space-x-2">
                   <span className="text-sm font-medium text-slate-700">Sort:</span>
                   <div className="relative">
-                    <motion.select
+                    <CustomDropdown
+                      label=""
                       value={sortBy}
-                      onChange={(e) => setSortBy(e.target.value)}
-                      className="px-4 py-2 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-slate-300 focus:border-transparent text-sm font-medium text-slate-700 cursor-pointer appearance-none pr-8"
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
-                    >
-                      <option value="name">Name A-Z</option>
-                      <option value="price-low">Price: Low to High</option>
-                      <option value="price-high">Price: High to Low</option>
-                      <option value="year">Newest First</option>
-                    </motion.select>
-                    <div className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
-                      <svg className="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                      </svg>
-                    </div>
+                      options={sortOptions}
+                      onChange={setSortBy}
+                      className="min-w-[180px]"
+                    />
                   </div>
                 </div>
               </div>
@@ -150,57 +237,21 @@ const Gallery: React.FC = () => {
               </span>
             </div>
 
-            {/* Category Dropdown */}
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-slate-700 mb-3">
-                Category
-              </label>
-              <div className="relative">
-                <motion.select
-                  value={selectedCategory}
-                  onChange={(e) => setSelectedCategory(e.target.value)}
-                  className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-slate-300 focus:border-transparent text-sm font-medium text-slate-700 appearance-none pr-10"
-                  whileHover={{ scale: 1.01 }}
-                  whileTap={{ scale: 0.99 }}
-                >
-                  {categories.map(category => (
-                    <option key={category} value={category}>
-                      {category}
-                    </option>
-                  ))}
-                </motion.select>
-                <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                  <svg className="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                  </svg>
-                </div>
-              </div>
-            </div>
-
-            {/* Sort Dropdown */}
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-3">
-                Sort by
-              </label>
-              <div className="relative">
-                <motion.select
-                  value={sortBy}
-                  onChange={(e) => setSortBy(e.target.value)}
-                  className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-slate-300 focus:border-transparent text-sm font-medium text-slate-700 appearance-none pr-10"
-                  whileHover={{ scale: 1.01 }}
-                  whileTap={{ scale: 0.99 }}
-                >
-                  <option value="name">Name A-Z</option>
-                  <option value="price-low">Price: Low to High</option>
-                  <option value="price-high">Price: High to Low</option>
-                  <option value="year">Newest First</option>
-                </motion.select>
-                <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                  <svg className="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                  </svg>
-                </div>
-              </div>
+            {/* Mobile Dropdowns */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <CustomDropdown
+                label="Category"
+                value={selectedCategory}
+                options={categoryOptions}
+                onChange={setSelectedCategory}
+              />
+              
+              <CustomDropdown
+                label="Sort by"
+                value={sortBy}
+                options={sortOptions}
+                onChange={setSortBy}
+              />
             </div>
           </div>
         </motion.div>
