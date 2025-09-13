@@ -84,12 +84,7 @@
   
   <!-- PWA Service Worker Registration -->
   <script>
-    // Check if running in StackBlitz or similar environments that don't support Service Workers
-    const isStackBlitz = window.location.hostname.includes('webcontainer.io') || 
-                        window.location.hostname.includes('stackblitz.io') ||
-                        window.location.hostname.includes('localhost');
-    
-    if ('serviceWorker' in navigator && !isStackBlitz) {
+    if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('/sw.js')
           .then((registration) => {
@@ -114,8 +109,6 @@
             console.error('PWA: Service Worker registration failed', error);
           });
       });
-    } else if (isStackBlitz) {
-      console.log('PWA: Service Worker registration skipped - running in development environment');
     }
 
     // Install prompt
