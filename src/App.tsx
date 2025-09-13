@@ -14,6 +14,7 @@ import AboutPage from './pages/AboutPage';
 import ContactPage from './pages/ContactPage';
 import WishlistPage from './pages/WishlistPage';
 import LoginPage from './pages/LoginPage';
+import { Transition } from "framer-motion";
 
 // Page transition variants
 const pageVariants = {
@@ -34,7 +35,7 @@ const pageVariants = {
   }
 };
 
-const pageTransition = {
+const pageTransition: Transition = {
   type: 'tween',
   ease: 'anticipate',
   duration: 0.5
