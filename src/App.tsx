@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-route
 import { AnimatePresence, motion } from 'framer-motion';
 import { CartProvider } from './context/CartContext';
 import { WishlistProvider } from './context/WishlistContext';
+import AllureLoader from './components/AllureLoader';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import Cart from './components/Cart';
@@ -13,6 +14,22 @@ import AboutPage from './pages/AboutPage';
 import ContactPage from './pages/ContactPage';
 import WishlistPage from './pages/WishlistPage';
 import LoginPage from './pages/LoginPage';
+
+// Simulate loading state - replace with your actual loading logic
+const useAppLoading = () => {
+  const [isLoading, setIsLoading] = useState(true);
+
+  React.useEffect(() => {
+    // Simulate app initialization
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 3000); // 3 seconds for demo
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  return isLoading;
+};
 
 // Page transition variants
 const pageVariants = {
@@ -88,6 +105,7 @@ const AppContent: React.FC<{ onCartOpen: () => void; isCartOpen: boolean; onCart
 
 function App() {
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const isLoading = useAppLoading();
 
   // Prevent scroll restoration on page reload
   React.useEffect(() => {
@@ -109,11 +127,14 @@ function App() {
     <Router>
       <CartProvider>
         <WishlistProvider>
-          <AppContent 
-            onCartOpen={handleCartOpen}
-            isCartOpen={isCartOpen}
-            onCartClose={handleCartClose}
-          />
+          <AllureLoader loading={isLoading} minDisplayMs={2500} />
+          {!isLoading && (
+            <AppContent 
+              onCartOpen={handleCartOpen}
+              isCartOpen={isCartOpen}
+              onCartClose={handleCartClose}
+            />
+          )}
         </WishlistProvider>
       </CartProvider>
     </Router>
