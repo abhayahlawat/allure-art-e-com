@@ -45,10 +45,12 @@
   <!-- Canonical URL -->
   <link rel="canonical" href="https://allureart.com" />
 
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="/manifest.json">
+
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-  <link rel="manifest" href="/site.webmanifest">
   <link rel="shortcut icon" href="/favicon.ico">
 
   <!-- Android/Chrome icons -->
@@ -65,11 +67,67 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap"
     rel="stylesheet">
+
+  <!-- PWA iOS Support -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Allure Art">
+  
+  <!-- PWA Windows Support -->
+  <meta name="msapplication-TileImage" content="/android-chrome-192x192.png">
+  <meta name="msapplication-TileColor" content="#1e293b">
 </head>
 
 <body>
   <div id="root"></div>
   <script type="module" src="/src/main.tsx"></script>
+  
+  <!-- PWA Service Worker Registration -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+          .then((registration) => {
+            console.log('PWA: Service Worker registered successfully', registration.scope);
+            
+            // Check for updates
+            registration.addEventListener('updatefound', () => {
+              const newWorker = registration.installing;
+              if (newWorker) {
+                newWorker.addEventListener('statechange', () => {
+                  if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                    // New content available, show update notification
+                    if (confirm('New version available! Reload to update?')) {
+                      window.location.reload();
+                    }
+                  }
+                });
+              }
+            });
+          })
+          .catch((error) => {
+            console.error('PWA: Service Worker registration failed', error);
+          });
+      });
+    }
+
+    // Install prompt
+    let deferredPrompt;
+    window.addEventListener('beforeinstallprompt', (e) => {
+      console.log('PWA: Install prompt available');
+      e.preventDefault();
+      deferredPrompt = e;
+      
+      // Show custom install button or banner
+      // You can add a custom install button here
+    });
+
+    // Track install
+    window.addEventListener('appinstalled', (e) => {
+      console.log('PWA: App installed successfully');
+      deferredPrompt = null;
+    });
+  </script>
 </body>
 
 </html>
