@@ -60,6 +60,10 @@ const AppContent: React.FC<{ onCartOpen: () => void; isCartOpen: boolean; onCart
   const location = useLocation();
   const isLoginPage = location.pathname === '/login';
 
+  // Scroll to top on route change
+  React.useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location.pathname]);
   return (
     <div className="min-h-screen bg-white w-full">
       {!isLoginPage && <Header onCartOpen={onCartOpen} />}
@@ -85,6 +89,14 @@ const AppContent: React.FC<{ onCartOpen: () => void; isCartOpen: boolean; onCart
 function App() {
   const [isCartOpen, setIsCartOpen] = useState(false);
 
+  // Prevent scroll restoration on page reload
+  React.useEffect(() => {
+    if ('scrollRestoration' in history) {
+      history.scrollRestoration = 'manual';
+    }
+    // Ensure page starts at top on initial load
+    window.scrollTo(0, 0);
+  }, []);
   const handleCartOpen = () => {
     setIsCartOpen(true);
   };
