@@ -12,7 +12,12 @@ const Footer: React.FC = () => {
   ];
 
   const quickLinks = [
-    'About Us', 'Gallery', 'Artists', 'Shipping Info', 'Returns', 'Contact'
+    { name: 'About Us', path: '/about' },
+    { name: 'Gallery', path: '/gallery' },
+    { name: 'Artists', path: '/artists' },
+    { name: 'Contact', path: '/contact' },
+    { name: 'Login', path: '/login' },
+    { name: 'Sign Up', path: '/signup' }
   ];
 
   const categories = [
@@ -52,59 +57,62 @@ const Footer: React.FC = () => {
             </div>
           </motion.div>
 
-          {/* Quick Links */}
-          <motion.div
-            className="space-y-4 sm:space-y-6"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2, duration: 0.6 }}
-          >
-            <h4 className="text-lg sm:text-xl font-semibold text-slate-800">Quick Links</h4>
-            <ul className="space-y-2 sm:space-y-3">
-              {quickLinks.map((link, index) => (
-                <motion.li
-                  key={link}
-                  initial={{ opacity: 0, x: -10 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.3 + index * 0.05, duration: 0.6 }}
-                >
-                  <a
-                    href="#"
-                    className="text-slate-700 hover:text-slate-900 transition-colors duration-300 text-sm sm:text-base"
+          {/* Quick Links and Categories Container - Side by side on mobile, separate columns on desktop */}
+          <div className="grid grid-cols-2 gap-4 sm:gap-6 sm:col-span-2 lg:contents">
+            {/* Quick Links */}
+            <motion.div
+              className="space-y-4 sm:space-y-6"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2, duration: 0.6 }}
+            >
+              <h4 className="text-lg sm:text-xl font-semibold text-slate-800">Quick Links</h4>
+              <ul className="space-y-2 sm:space-y-3">
+                {quickLinks.map((link, index) => (
+                  <motion.li
+                    key={link.path}
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.3 + index * 0.05, duration: 0.6 }}
                   >
-                    {link}
-                  </a>
-                </motion.li>
-              ))}
-            </ul>
-          </motion.div>
+                    <Link
+                      to={link.path}
+                      className="text-slate-700 hover:text-slate-900 transition-colors duration-300 text-sm sm:text-base"
+                    >
+                      {link.name}
+                    </Link>
+                  </motion.li>
+                ))}
+              </ul>
+            </motion.div>
 
-          {/* Categories */}
-          <motion.div
-            className="space-y-4 sm:space-y-6"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4, duration: 0.6 }}
-          >
-            <h4 className="text-lg sm:text-xl font-semibold text-slate-800">Categories</h4>
-            <ul className="space-y-2 sm:space-y-3">
-              {categories.map((category, index) => (
-                <motion.li
-                  key={category}
-                  initial={{ opacity: 0, x: -10 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.5 + index * 0.05, duration: 0.6 }}
-                >
-                  <a
-                    href="#"
-                    className="text-slate-700 hover:text-slate-900 transition-colors duration-300 text-sm sm:text-base"
+            {/* Categories */}
+            <motion.div
+              className="space-y-4 sm:space-y-6"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4, duration: 0.6 }}
+            >
+              <h4 className="text-lg sm:text-xl font-semibold text-slate-800">Categories</h4>
+              <ul className="space-y-2 sm:space-y-3">
+                {categories.map((category, index) => (
+                  <motion.li
+                    key={category}
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.5 + index * 0.05, duration: 0.6 }}
                   >
-                    {category}
-                  </a>
-                </motion.li>
-              ))}
-            </ul>
-          </motion.div>
+                    <a
+                      href="#"
+                      className="text-slate-700 hover:text-slate-900 transition-colors duration-300 text-sm sm:text-base"
+                    >
+                      {category}
+                    </a>
+                  </motion.li>
+                ))}
+              </ul>
+            </motion.div>
+          </div>
 
           {/* Contact */}
           <motion.div
