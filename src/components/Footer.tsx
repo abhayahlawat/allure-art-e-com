@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Instagram, Twitter, Facebook, Mail, MapPin, Phone } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const Footer: React.FC = () => {
   const socialLinks = [
@@ -153,18 +154,18 @@ const Footer: React.FC = () => {
           transition={{ delay: 1, duration: 0.6 }}
         >
           <p className="text-slate-600 text-sm text-center md:text-left">
-            © 2024 Allure Art. All rights reserved.
+            2024 Allure Art. All rights reserved.
           </p>
           <div className="flex flex-wrap justify-center md:justify-end space-x-4 sm:space-x-6">
-            <a href="#" className="text-slate-600 text-sm hover:text-slate-800 transition-colors duration-300">
+            <Link to="/privacy-policy" className="text-slate-600 text-sm hover:text-slate-800 transition-colors duration-300">
               Privacy Policy
-            </a>
-            <a href="#" className="text-slate-600 text-sm hover:text-slate-800 transition-colors duration-300">
+            </Link>
+            <Link to="/terms-of-service" className="text-slate-600 text-sm hover:text-slate-800 transition-colors duration-300">
               Terms of Service
-            </a>
-            <a href="#" className="text-slate-600 text-sm hover:text-slate-800 transition-colors duration-300">
+            </Link>
+            <Link to="/cookie-policy" className="text-slate-600 text-sm hover:text-slate-800 transition-colors duration-300">
               Cookie Policy
-            </a>
+            </Link>
           </div>
         </motion.div>
       </div>

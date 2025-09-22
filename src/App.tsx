@@ -14,6 +14,9 @@ import AboutPage from './pages/AboutPage';
 import ContactPage from './pages/ContactPage';
 import WishlistPage from './pages/WishlistPage';
 import LoginPage from './pages/LoginPage';
+import PrivacyPolicy from './pages/PrivacyPolicy';
+import TermsOfService from './pages/TermsOfService';
+import CookiePolicy from './pages/CookiePolicy';
 import { Transition } from "framer-motion";
 
 // Page transition variants
@@ -79,6 +82,9 @@ const AppContent: React.FC<{ onCartOpen: () => void; isCartOpen: boolean; onCart
           <Route path="/contact" element={<PageWrapper><ContactPage /></PageWrapper>} />
           <Route path="/wishlist" element={<PageWrapper><WishlistPage /></PageWrapper>} />
           <Route path="/login" element={<PageWrapper><LoginPage /></PageWrapper>} />
+          <Route path="/privacy-policy" element={<PageWrapper><PrivacyPolicy /></PageWrapper>} />
+          <Route path="/terms-of-service" element={<PageWrapper><TermsOfService /></PageWrapper>} />
+          <Route path="/cookie-policy" element={<PageWrapper><CookiePolicy /></PageWrapper>} />
         </Routes>
       </AnimatePresence>
       
