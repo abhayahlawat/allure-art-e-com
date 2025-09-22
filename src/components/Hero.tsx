@@ -6,18 +6,15 @@ import { heroSlides } from '../data/heroSlides';
 
 const Hero: React.FC = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [isLoaded, setIsLoaded] = useState(true);
-  const [imagesLoaded, setImagesLoaded] = useState<{ [key: number]: boolean }>({});
   const [allImagesPreloaded, setAllImagesPreloaded] = useState(false);
 
   useEffect(() => {
     // Preload all hero images
     const preloadImages = async () => {
-      const imagePromises = heroSlides.map((slide, index) => {
+      const imagePromises = heroSlides.map((slide) => {
         return new Promise<void>((resolve) => {
           const img = new Image();
           img.onload = () => {
-            setImagesLoaded(prev => ({ ...prev, [index]: true }));
             resolve();
           };
           img.onerror = () => resolve(); // Continue even if image fails
@@ -51,34 +48,25 @@ const Hero: React.FC = () => {
   const currentSlideData = heroSlides[currentSlide];
 
   return (
-    <section className="relative min-h-screen bg-gradient-to-br from-pastel-lavender via-pastel-cream to-pastel-blush overflow-hidden">
+    <section className="relative min-h-[100dvh] sm:min-h-screen pt-20 pb-[env(safe-area-inset-bottom)] bg-gradient-to-br from-pastel-lavender via-pastel-cream to-pastel-blush overflow-hidden">
       {/* Background Elements */}
-      <div className="absolute inset-0">
-        <motion.div
+      <div className="hidden sm:block absolute inset-0">
+        <div
           className="absolute top-6 left-4 sm:top-8 md:top-10 lg:left-10 w-16 h-16 sm:w-18 sm:h-18 md:w-20 md:h-20 bg-pastel-sage rounded-full opacity-30"
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 0.3, scale: 1 }}
-          transition={{ duration: 0.6, delay: 0.1 }}
         />
-        <motion.div
+        <div
           className="absolute top-1/4 right-4 sm:right-8 md:top-1/3 md:right-20 w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 bg-pastel-peach rounded-full opacity-40"
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 0.4, scale: 1 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
         />
-        <motion.div
+        <div
           className="absolute bottom-1/3 left-1/5 sm:bottom-1/4 md:left-1/4 w-10 h-10 sm:w-11 sm:h-11 md:w-12 md:h-12 bg-pastel-lilac rounded-full opacity-35"
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 0.35, scale: 1 }}
-          transition={{ duration: 0.6, delay: 0.3 }}
         />
       </div>
 
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 min-h-screen flex items-center pt-20 sm:pt-24 md:pt-32 lg:pt-24">
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center pt-0 sm:pt-24 md:pt-32 lg:pt-24">
         <div className="grid lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-12 items-center w-full">
           {/* Content */}
           <motion.div
-            className="space-y-6 sm:space-y-8"
+            className="space-y-6 sm:space-y-8 mt-6 sm:mt-0"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, ease: "easeOut" }}
@@ -90,10 +78,11 @@ const Hero: React.FC = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1, duration: 0.5 }}
               >
-                {currentSlideData.title}
-                <br />
+                <span className="whitespace-nowrap">{currentSlideData.title}</span>
+                <span className="hidden sm:inline"><br /></span>
+                {' '}
                 <span className="font-cursive text-slate-700">{currentSlideData.subtitle}</span>
-                <br />
+                <span className="hidden sm:inline"><br /></span>
                 Art
               </motion.h2>
 
@@ -142,7 +131,7 @@ const Hero: React.FC = () => {
 
           {/* Featured Art Piece */}
           <motion.div
-            className="relative mt-8 lg:mt-0"
+            className="relative mt-4 sm:mt-8 lg:mt-0"
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.6, delay: 0.2 }}
@@ -156,7 +145,7 @@ const Hero: React.FC = () => {
               />
               
               {/* Image container with smooth transitions */}
-              <div className="relative w-full max-w-[280px] sm:max-w-xs md:max-w-sm lg:max-w-md mx-auto h-[350px] sm:h-[400px] md:h-[450px] rounded-xl sm:rounded-2xl overflow-hidden">
+              <div className="relative w-full max-w-[260px] sm:max-w-xs md:max-w-sm lg:max-w-md mx-auto h-[240px] sm:h-[400px] md:h-[450px] rounded-xl sm:rounded-2xl overflow-hidden">
                 {/* Loading placeholder */}
                 {!allImagesPreloaded && (
                   <div className="absolute inset-0 bg-gradient-to-br from-pastel-lavender to-pastel-cream animate-pulse rounded-xl sm:rounded-2xl" />
@@ -226,23 +215,7 @@ const Hero: React.FC = () => {
           </motion.div>
         </div>
 
-        {/* Slide Indicators */}
-        <div className="absolute bottom-6 sm:bottom-8 md:bottom-12 lg:bottom-20 left-1/2 transform -translate-x-1/2 flex space-x-2 sm:space-x-3">
-          {heroSlides.map((_, index) => (
-            <motion.button
-              key={index}
-              onClick={() => setCurrentSlide(index)}
-              className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                index === currentSlide ? 'bg-slate-800' : 'bg-slate-400'
-              }`}
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.7 + index * 0.05, duration: 0.3 }}
-              whileHover={{ scale: 1.2 }}
-              whileTap={{ scale: 0.9 }}
-            />
-          ))}
-        </div>
+        
       </div>
     </section>
   );
