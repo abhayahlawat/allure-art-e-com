@@ -22,7 +22,11 @@ const CheckoutPage: React.FC = () => {
   const { cart, getTotalPrice, getTotalItems, clearCart } = useCart();
   const { user, getAuthHeader } = useAuth();
   const navigate = useNavigate();
-  const API_BASE = (import.meta as any).env?.VITE_API_BASE || 'http://localhost:4000';
+  // Function to ensure proper URL construction
+  const getApiUrl = (path: string) => {
+    const base = (import.meta as any).env?.VITE_API_BASE || 'http://localhost:4000';
+    return `${base.replace(/\/+$/, '')}/${path.replace(/^\/+/, '')}`;
+  };
 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -59,7 +63,7 @@ const CheckoutPage: React.FC = () => {
         const authHeader = await getAuthHeader();
         if (!authHeader) return;
         
-        const response = await fetch(`${API_BASE}/api/addresses`, {
+        const response = await fetch(getApiUrl('api/addresses'), {
           headers: { Authorization: authHeader }
         });
         
@@ -119,7 +123,7 @@ const CheckoutPage: React.FC = () => {
       }
       
       console.log('Auth header retrieved');
-      console.log('API Base URL:', API_BASE);
+      console.log('API Base URL:', (import.meta as any).env?.VITE_API_BASE || 'http://localhost:4000');
       
       // First, save the billing address
       const { billingData } = await (async () => {
@@ -156,7 +160,7 @@ const CheckoutPage: React.FC = () => {
       
       try {
         console.log('Sending request to save billing address:', {
-          url: `${API_BASE}/api/addresses`,
+          url: getApiUrl('api/addresses'),
           method: 'POST',
           headers: { 
             'Content-Type': 'application/json', 
@@ -165,7 +169,7 @@ const CheckoutPage: React.FC = () => {
           body: addressToSave
         });
 
-        const billingResponse = await fetch(`${API_BASE}/api/addresses`, {
+        const billingResponse = await fetch(getApiUrl('api/addresses'), {
           method: 'POST',
           headers: { 
             'Content-Type': 'application/json', 
@@ -231,7 +235,7 @@ if (!useSameAddress) {
           user_id: user.id // Add the user_id field
         };
 
-        const shippingResponse = await fetch(`${API_BASE}/api/addresses`, {
+        const shippingResponse = await fetch(getApiUrl('api/addresses'), {
           method: 'POST',
           headers: { 
             'Content-Type': 'application/json', 
@@ -275,7 +279,7 @@ if (!useSameAddress) {
       
       console.log('Creating order with payload:', orderPayload);
       
-      const orderResponse = await fetch(`${API_BASE}/api/orders/create-order`, {
+      const orderResponse = await fetch(getApiUrl('api/orders/create-order'), {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json', 
@@ -312,13 +316,17 @@ if (!useSameAddress) {
         description: 'Order payment',
         order_id: orderData.razorpayOrder.id,
         handler: async function (response: any) {
-          const verifyRes = await fetch(`${API_BASE}/api/orders/verify`, {
+          const verifyRes = await fetch(getApiUrl('api/orders/verify'), {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 
+              'Content-Type': 'application/json',
+              'Authorization': authHeader 
+            },
             body: JSON.stringify({
               razorpay_order_id: response.razorpay_order_id,
               razorpay_payment_id: response.razorpay_payment_id,
-              razorpay_signature: response.razorpay_signature
+              razorpay_signature: response.razorpay_signature,
+              order_id: orderData.id // Include the order ID for verification
             })
           });
           const verifyData = await verifyRes.json();
