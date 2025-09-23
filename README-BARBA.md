@@ -116,3 +116,13 @@ const galleryVariants = {
 - Page-specific transition variants
 - Gesture-based navigation
 - Shared element transitions
+
+## Backend integration
+
+- Set `VITE_API_BASE` in a `.env` file at project root (Vite) and your Razorpay key id:
+```
+VITE_API_BASE=http://localhost:4000
+VITE_RAZORPAY_KEY_ID=your_key_id
+```
+- Start backend from `allure-art-e-com-backend` with `npm run dev`.
+- Checkout opens Razorpay and redirects to `/order-complete?orderId=...` on success.

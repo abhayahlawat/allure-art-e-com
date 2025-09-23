@@ -2,6 +2,8 @@ import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Minus, Plus, Trash2 } from 'lucide-react';
 import { useCart } from '../context/CartContext';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
 interface CartProps {
   isOpen: boolean;
@@ -10,6 +12,17 @@ interface CartProps {
 
 const Cart: React.FC<CartProps> = ({ isOpen, onClose }) => {
   const { cart, removeFromCart, updateQuantity, getTotalPrice, getTotalItems } = useCart();
+  const navigate = useNavigate();
+  const { user } = useAuth();
+
+  const handleCheckout = async () => {
+    if (!user) {
+      navigate('/login', { state: { from: '/cart' } });
+      return;
+    }
+    onClose();
+    navigate('/checkout');
+  };
 
   return (
     <AnimatePresence>
@@ -71,7 +84,7 @@ const Cart: React.FC<CartProps> = ({ isOpen, onClose }) => {
                           <h3 className="font-semibold text-slate-800">{item.title}</h3>
                           <p className="text-sm text-slate-600">by {item.artist}</p>
                           <p className="font-bold text-slate-800">
-                            ₹{(item.price * 83).toLocaleString()}
+                            ₹{item.price.toLocaleString()}
                           </p>
                           
                           <div className="flex items-center justify-between mt-3">
@@ -116,10 +129,11 @@ const Cart: React.FC<CartProps> = ({ isOpen, onClose }) => {
                 <div className="border-t border-gray-200 p-6 space-y-4">
                   <div className="flex justify-between items-center text-xl font-bold">
                     <span>Total:</span>
-                    <span>₹{(getTotalPrice() * 83).toLocaleString()}</span>
+                    <span>₹{getTotalPrice().toLocaleString()}</span>
                   </div>
                   
                   <motion.button
+                    onClick={handleCheckout}
                     className="w-full bg-slate-800 text-white py-4 rounded-full font-medium hover:bg-slate-700 transition-colors duration-300"
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}

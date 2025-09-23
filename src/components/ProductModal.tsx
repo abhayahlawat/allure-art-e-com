@@ -75,7 +75,7 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, isOpen, onClose })
                     <h2 className="text-3xl font-bold text-slate-800">{product.title}</h2>
                     <p className="text-xl text-slate-600 font-medium">by {product.artist}</p>
                     <div className="text-3xl font-bold text-slate-800">
-                      ₹{(product.price * 83).toLocaleString()}
+                      ₹{product.price.toLocaleString()}
                     </div>
                   </div>
 

@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { ShoppingBag, Menu, X, Heart, User } from 'lucide-react';
+import ProfileModal from './ProfileModal';
+import { AnimatePresence, motion } from 'framer-motion';
 import { useCart } from '../context/CartContext';
 import { useWishlist } from '../context/WishlistContext';
+import { useAuth } from '../context/AuthContext';
 
 interface HeaderProps {
   onCartOpen: () => void;
@@ -12,12 +15,32 @@ const Header: React.FC<HeaderProps> = ({ onCartOpen }) => {
   const { getTotalItems } = useCart();
   const { getWishlistCount } = useWishlist();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [showUserMenu, setShowUserMenu] = useState(false);
+  const [isDesktop, setIsDesktop] = useState<boolean>(typeof window !== 'undefined' ? window.matchMedia('(min-width: 768px)').matches : true);
   const location = useLocation();
+  const { user, signOut } = useAuth();
 
   // Close mobile menu when route changes
   useEffect(() => {
     setIsMenuOpen(false);
   }, [location.pathname]);
+
+  // Track viewport to differentiate hover (desktop) vs click (mobile)
+  useEffect(() => {
+    const mq = window.matchMedia('(min-width: 768px)');
+    const update = () => {
+      setIsDesktop(mq.matches);
+      setShowUserMenu(false);
+    };
+    update();
+    if (mq.addEventListener) mq.addEventListener('change', update);
+    else mq.addListener(update);
+    return () => {
+      if (mq.removeEventListener) mq.removeEventListener('change', update);
+      else mq.removeListener(update);
+    };
+  }, []);
 
   const navigation = [
     { name: 'Home', path: '/' },
@@ -71,12 +94,49 @@ const Header: React.FC<HeaderProps> = ({ onCartOpen }) => {
               )}
             </Link>
             
-            <Link
-              to="/login"
-              className="p-2 text-slate-700 hover:text-slate-900 transition-colors block rounded-lg hover:bg-slate-100"
-            >
-              <User size={18} />
-            </Link>
+            {user ? (
+              <div className="relative">
+                <button
+                  onClick={() => !isDesktop && setShowUserMenu(v => !v)}
+                  onMouseEnter={() => isDesktop && setShowUserMenu(true)}
+                  className="p-2 text-slate-700 hover:text-slate-900 transition-colors rounded-lg hover:bg-slate-100"
+                  title={user.email || undefined}
+                >
+                  <User size={18} />
+                </button>
+                {/* Mobile outside click catcher */}
+                {showUserMenu && (
+                  <button
+                    type="button"
+                    className="fixed inset-0 md:hidden z-40"
+                    aria-label="Close menu overlay"
+                    onClick={() => setShowUserMenu(false)}
+                  />
+                )}
+                <AnimatePresence>
+                  {showUserMenu && (
+                    <motion.div
+                      onMouseLeave={() => isDesktop && setShowUserMenu(false)}
+                      className="absolute right-0 mt-2 w-40 bg-white border rounded-xl shadow-lg z-50 origin-top-right"
+                      initial={{ opacity: 0, y: -6, scale: 0.98 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: -6, scale: 0.98 }}
+                      transition={{ duration: 0.12, ease: 'easeOut' }}
+                    >
+                      <button onClick={() => { setIsProfileOpen(true); setShowUserMenu(false); }} className="w-full text-left px-4 py-2 hover:bg-gray-50">Profile</button>
+                      <button onClick={() => { signOut(); setShowUserMenu(false); }} className="w-full text-left px-4 py-2 hover:bg-gray-50">Sign out</button>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            ) : (
+              <Link
+                to="/login"
+                className="p-2 text-slate-700 hover:text-slate-900 transition-colors rounded-lg hover:bg-slate-100"
+              >
+                <User size={18} />
+              </Link>
+            )}
 
             <button
               onClick={onCartOpen}
@@ -136,10 +196,12 @@ const Header: React.FC<HeaderProps> = ({ onCartOpen }) => {
                   </div>
                 </Link>
               ))}
+              {/* User icon is now only in the header, not in mobile menu */}
             </div>
           </nav>
         </div>
       </div>
+      <ProfileModal isOpen={isProfileOpen} onClose={() => setIsProfileOpen(false)} />
     </header>
   );
 };

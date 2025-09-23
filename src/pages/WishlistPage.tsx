@@ -94,7 +94,7 @@ const WishlistPage: React.FC = () => {
                         <p className="text-slate-600 font-medium">by {product.artist}</p>
                         <div className="flex items-center justify-between">
                           <span className="text-2xl font-bold text-slate-800">
-                            ₹{(product.price * 83).toLocaleString()}
+                            ₹{product.price.toLocaleString()}
                           </span>
                           <div className="text-right">
                             <p className="text-sm text-slate-500">{product.dimensions}</p>

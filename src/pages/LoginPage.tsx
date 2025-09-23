@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Eye, EyeOff, Mail, Lock, User } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 
 const LoginPage: React.FC = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -19,9 +20,23 @@ const LoginPage: React.FC = () => {
     });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const { signInWithPassword, signUpWithPassword } = useAuth();
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Form submitted:', formData);
+    if (isLogin) {
+      const { error } = await signInWithPassword(formData.email, formData.password);
+      if (error) alert(error);
+      else window.history.back();
+    } else {
+      if (formData.password !== formData.confirmPassword) {
+        alert('Passwords do not match');
+        return;
+        }
+      const { error } = await signUpWithPassword(formData.email, formData.password);
+      if (error) alert(error);
+      else alert('Check your email to confirm your account.');
+    }
   };
 
   return (

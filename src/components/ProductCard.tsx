@@ -142,7 +142,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onViewDetails }) => 
           </div>
           <div className="flex items-center justify-between pt-1">
             <span className="text-xl font-bold text-slate-800">
-              ₹{(product.price * 83).toLocaleString()}
+              ₹{product.price.toLocaleString()}
             </span>
             <div className="text-right">
               <p className="text-xs text-slate-500">{product.dimensions}</p>

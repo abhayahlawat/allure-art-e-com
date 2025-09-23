@@ -38,6 +38,7 @@ const CustomDropdown: React.FC<DropdownProps> = ({
         type="button"
         onClick={() => setIsOpen(!isOpen)}
         className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-pastel-sage focus:border-transparent text-left font-medium text-slate-700 flex items-center justify-between"
+        aria-required={required}
         whileHover={{ scale: 1.01 }}
         whileTap={{ scale: 0.99 }}
       >

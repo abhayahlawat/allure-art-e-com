@@ -5,7 +5,7 @@ export const products: Product[] = [
     id: '1',
     title: 'Ethereal Dreams',
     artist: 'Marina Celestine',
-    price: 1250,
+    price: 10, // ₹8,300
     image: 'https://images.pexels.com/photos/1183992/pexels-photo-1183992.jpeg',
     description: 'A mesmerizing abstract piece that captures the essence of dreams through flowing pastels and organic forms.',
     category: 'Abstract',
@@ -17,7 +17,7 @@ export const products: Product[] = [
     id: '2',
     title: 'Garden of Serenity',
     artist: 'Elena Botanical',
-    price: 850,
+    price: 70550, // ₹70,550
     image: 'https://images.pexels.com/photos/1266808/pexels-photo-1266808.jpeg',
     description: 'Delicate florals dance across the canvas in this peaceful garden scene rendered in soft watercolors.',
     category: 'Botanical',
@@ -29,7 +29,7 @@ export const products: Product[] = [
     id: '3',
     title: 'Ocean Whispers',
     artist: 'Marco Azul',
-    price: 2100,
+    price: 176000, // ₹1,76,000
     image: 'https://images.pexels.com/photos/1269968/pexels-photo-1269968.jpeg',
     description: 'The calming essence of ocean waves captured through textured brushstrokes and azure tones.',
     category: 'Seascape',
