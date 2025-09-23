@@ -64,7 +64,7 @@ const CheckoutPage: React.FC = () => {
         if (!authHeader) return;
         
         const response = await fetch(getApiUrl('api/addresses'), {
-          method: 'POST',
+          method: 'GET',
           headers: { 
             'Authorization': authHeader,
             'Accept': 'application/json'
