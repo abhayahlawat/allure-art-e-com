@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { supabase } from '../context/AuthContext';
-import { Loader2, Clock, ShoppingBag } from 'lucide-react';
+import { Clock, ShoppingBag } from 'lucide-react';
 
 type OrderItem = {
   id: string;
@@ -104,11 +104,76 @@ const OrdersPage: React.FC = () => {
     fetchOrders();
   }, [user]);
 
+  // Skeleton Loader Component
+  const OrderSkeleton = () => (
+    <div className="space-y-6">
+      {[1, 2, 3].map((i) => (
+        <div key={i} className="p-6 bg-white rounded-lg shadow-sm border border-slate-200 animate-pulse">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+            <div className="mb-4 sm:mb-0">
+              <div className="h-6 bg-slate-200 rounded w-48 mb-2"></div>
+              <div className="h-4 bg-slate-200 rounded w-32"></div>
+            </div>
+            <div className="h-8 bg-slate-200 rounded-md w-24"></div>
+          </div>
+          <div className="mt-6 pt-6 border-t border-slate-100">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <div className="h-4 bg-slate-200 rounded w-24 mb-2"></div>
+                <div className="space-y-2">
+                  {[1, 2, 3].map((j) => (
+                    <div key={j} className="flex items-start space-x-4">
+                      <div className="flex-shrink-0 h-16 w-16 bg-slate-200 rounded"></div>
+                      <div className="flex-1">
+                        <div className="h-4 bg-slate-200 rounded w-32 mb-2"></div>
+                        <div className="h-3 bg-slate-200 rounded w-24"></div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div className="space-y-4">
+                <div>
+                  <div className="h-4 bg-slate-200 rounded w-32 mb-2"></div>
+                  <div className="h-3 bg-slate-200 rounded w-48"></div>
+                  <div className="h-3 bg-slate-200 rounded w-36 mt-1"></div>
+                </div>
+                <div>
+                  <div className="h-4 bg-slate-200 rounded w-32 mb-2"></div>
+                  <div className="h-3 bg-slate-200 rounded w-48"></div>
+                  <div className="h-3 bg-slate-200 rounded w-36 mt-1"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="mt-6 pt-6 border-t border-slate-100 flex justify-end">
+            <div className="h-10 bg-slate-200 rounded-md w-32"></div>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center flex-col space-y-4">
-        <Loader2 className="h-12 w-12 animate-spin text-pastel-rose" />
-        <p className="text-slate-600">Loading your order history...</p>
+      <div className="min-h-screen bg-slate-50 pt-24 pb-12 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
+            <div className="px-6 py-8 sm:p-10">
+              <div className="mb-8">
+                <div className="h-8 bg-slate-200 rounded w-48 mb-2"></div>
+                <div className="h-4 bg-slate-200 rounded w-64"></div>
+              </div>
+              <div className="bg-slate-50 p-6 rounded-xl">
+                <div className="flex items-center justify-between mb-6">
+                  <div className="h-6 bg-slate-200 rounded w-32"></div>
+                  <div className="h-4 bg-slate-200 rounded w-16"></div>
+                </div>
+                <OrderSkeleton />
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     );
   }
@@ -118,7 +183,7 @@ const OrdersPage: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 py-8 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-slate-50 pt-24 pb-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
         <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
           <div className="px-6 py-8 sm:p-10">
