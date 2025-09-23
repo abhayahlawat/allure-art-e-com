@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { ShoppingBag, Menu, X, Heart, User } from 'lucide-react';
-import ProfileModal from './ProfileModal';
-import { AnimatePresence, motion } from 'framer-motion';
+import { ShoppingBag, Menu, X, Heart, LogOut, User } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useCart } from '../context/CartContext';
 import { useWishlist } from '../context/WishlistContext';
 import { useAuth } from '../context/AuthContext';
@@ -15,31 +14,39 @@ const Header: React.FC<HeaderProps> = ({ onCartOpen }) => {
   const { getTotalItems } = useCart();
   const { getWishlistCount } = useWishlist();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isProfileOpen, setIsProfileOpen] = useState(false);
-  const [showUserMenu, setShowUserMenu] = useState(false);
-  const [isDesktop, setIsDesktop] = useState<boolean>(typeof window !== 'undefined' ? window.matchMedia('(min-width: 768px)').matches : true);
+  const [showSignOut, setShowSignOut] = useState(false);
+  const [isSigningOut, setIsSigningOut] = useState(false);
   const location = useLocation();
   const { user, signOut } = useAuth();
+
+  // Get user initials from email
+  const getUserInitials = () => {
+    if (!user?.email) return 'U';
+    return user.email
+      .split('@')[0] // Get the part before @
+      .split(/[^a-zA-Z]/) // Split on non-letters
+      .filter(Boolean) // Remove empty strings
+      .map(name => name[0].toUpperCase()) // Get first letter of each part
+      .join('') // Join letters
+      .substring(0, 2); // Take first 2 letters
+  };
 
   // Close mobile menu when route changes
   useEffect(() => {
     setIsMenuOpen(false);
   }, [location.pathname]);
 
-  // Track viewport to differentiate hover (desktop) vs click (mobile)
+  // Track viewport to handle responsive behavior
   useEffect(() => {
-    const mq = window.matchMedia('(min-width: 768px)');
-    const update = () => {
-      setIsDesktop(mq.matches);
-      setShowUserMenu(false);
+    const handleResize = () => {
+      if (window.innerWidth >= 768) {
+        // Desktop view
+        setShowSignOut(false);
+      }
     };
-    update();
-    if (mq.addEventListener) mq.addEventListener('change', update);
-    else mq.addListener(update);
-    return () => {
-      if (mq.removeEventListener) mq.removeEventListener('change', update);
-      else mq.removeListener(update);
-    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
   const navigation = [
@@ -95,46 +102,53 @@ const Header: React.FC<HeaderProps> = ({ onCartOpen }) => {
             </Link>
             
             {user ? (
-              <div className="relative">
-                <button
-                  onClick={() => !isDesktop && setShowUserMenu(v => !v)}
-                  onMouseEnter={() => isDesktop && setShowUserMenu(true)}
-                  className="p-2 text-slate-700 hover:text-slate-900 transition-colors rounded-lg hover:bg-slate-100"
-                  title={user.email || undefined}
-                >
-                  <User size={18} />
-                </button>
-                {/* Mobile outside click catcher */}
-                {showUserMenu && (
-                  <button
-                    type="button"
-                    className="fixed inset-0 md:hidden z-40"
-                    aria-label="Close menu overlay"
-                    onClick={() => setShowUserMenu(false)}
-                  />
-                )}
+              <div 
+                className="relative"
+                onMouseEnter={() => setShowSignOut(true)}
+                onMouseLeave={() => setShowSignOut(false)}
+              >
+                <div className="flex items-center justify-center h-8 w-8 rounded-full bg-slate-200 text-slate-700 font-medium cursor-pointer">
+                  {getUserInitials()}
+                </div>
+                
                 <AnimatePresence>
-                  {showUserMenu && (
-                    <motion.div
-                      onMouseLeave={() => isDesktop && setShowUserMenu(false)}
-                      className="absolute right-0 mt-2 w-40 bg-white border rounded-xl shadow-lg z-50 origin-top-right"
-                      initial={{ opacity: 0, y: -6, scale: 0.98 }}
-                      animate={{ opacity: 1, y: 0, scale: 1 }}
-                      exit={{ opacity: 0, y: -6, scale: 0.98 }}
-                      transition={{ duration: 0.12, ease: 'easeOut' }}
+                  {showSignOut && (
+                    <motion.button
+                      onClick={async (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        setIsSigningOut(true);
+                        try {
+                          await signOut();
+                          // The AuthContext will handle the redirect
+                        } catch (error) {
+                          console.error('Sign out error:', error);
+                          // Force redirect even if there was an error
+                          window.location.href = '/';
+                        } finally {
+                          setIsSigningOut(false);
+                        }
+                      }}
+                      className="absolute right-0 mt-2 w-32 bg-white border border-slate-200 rounded-lg shadow-lg z-50 overflow-hidden flex items-center justify-center space-x-2 py-2 text-red-600 hover:bg-red-50 transition-colors"
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      transition={{ duration: 0.15 }}
+                      disabled={isSigningOut}
                     >
-                      <button onClick={() => { setIsProfileOpen(true); setShowUserMenu(false); }} className="w-full text-left px-4 py-2 hover:bg-gray-50">Profile</button>
-                      <button onClick={() => { signOut(); setShowUserMenu(false); }} className="w-full text-left px-4 py-2 hover:bg-gray-50">Sign out</button>
-                    </motion.div>
+                      <LogOut size={16} />
+                      <span>{isSigningOut ? 'Signing out...' : 'Sign out'}</span>
+                    </motion.button>
                   )}
                 </AnimatePresence>
               </div>
             ) : (
               <Link
                 to="/login"
-                className="p-2 text-slate-700 hover:text-slate-900 transition-colors rounded-lg hover:bg-slate-100"
+                className="p-2 text-slate-700 hover:text-slate-900 transition-colors rounded-lg hover:bg-slate-100 flex items-center justify-center"
+                title="Login"
               >
-                <User size={18} />
+                <User size={20} />
               </Link>
             )}
 
@@ -196,12 +210,10 @@ const Header: React.FC<HeaderProps> = ({ onCartOpen }) => {
                   </div>
                 </Link>
               ))}
-              {/* User icon is now only in the header, not in mobile menu */}
             </div>
           </nav>
         </div>
       </div>
-      <ProfileModal isOpen={isProfileOpen} onClose={() => setIsProfileOpen(false)} />
     </header>
   );
 };
