@@ -159,14 +159,16 @@ const CheckoutPage: React.FC = () => {
       console.log('Saving billing address...', addressToSave);
       
       try {
+        const requestBody = JSON.stringify(addressToSave);
         console.log('Sending request to save billing address:', {
           url: getApiUrl('api/addresses'),
           method: 'POST',
           headers: { 
             'Content-Type': 'application/json', 
-            'Authorization': authHeader 
+            'Authorization': authHeader,
+            'Accept': 'application/json'
           },
-          body: addressToSave
+          body: requestBody
         });
 
         const billingResponse = await fetch(getApiUrl('api/addresses'), {
@@ -176,7 +178,7 @@ const CheckoutPage: React.FC = () => {
             'Authorization': authHeader,
             'Accept': 'application/json'
           },
-          body: JSON.stringify(addressToSave)
+          body: requestBody
         });
 
         const billingResponseText = await billingResponse.text();
