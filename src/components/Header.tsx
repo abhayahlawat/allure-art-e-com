@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { ShoppingBag, Menu, X, Heart, LogOut, User } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -16,8 +16,47 @@ const Header: React.FC<HeaderProps> = ({ onCartOpen }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showSignOut, setShowSignOut] = useState(false);
   const [isSigningOut, setIsSigningOut] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const location = useLocation();
   const { user, signOut } = useAuth();
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setShowSignOut(false);
+      }
+    };
+
+    // Add event listener when dropdown is open
+    if (showSignOut) {
+      document.addEventListener('mousedown', handleClickOutside);
+      document.addEventListener('touchstart', handleClickOutside as EventListener);
+    }
+
+    // Clean up
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('touchstart', handleClickOutside as EventListener);
+    };
+  }, [showSignOut]);
+
+  // Check if mobile on mount and resize
+  useEffect(() => {
+    const checkIfMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    // Initial check
+    checkIfMobile();
+    
+    // Add event listener for window resize
+    window.addEventListener('resize', checkIfMobile);
+    
+    // Cleanup
+    return () => window.removeEventListener('resize', checkIfMobile);
+  }, []);
 
   // Get user initials from email
   const getUserInitials = () => {
@@ -104,10 +143,14 @@ const Header: React.FC<HeaderProps> = ({ onCartOpen }) => {
             {user ? (
               <div 
                 className="relative"
-                onMouseEnter={() => setShowSignOut(true)}
-                onMouseLeave={() => setShowSignOut(false)}
+                ref={dropdownRef}
+                onMouseEnter={() => !isMobile && setShowSignOut(true)}
+                onMouseLeave={() => !isMobile && setShowSignOut(false)}
               >
-                <div className="flex items-center justify-center h-8 w-8 rounded-full bg-slate-200 text-slate-700 font-medium cursor-pointer">
+                <div 
+                  className="flex items-center justify-center h-8 w-8 rounded-full bg-slate-200 text-slate-700 font-medium cursor-pointer"
+                  onClick={() => isMobile && setShowSignOut(!showSignOut)}
+                >
                   {getUserInitials()}
                 </div>
                 
@@ -123,7 +166,7 @@ const Header: React.FC<HeaderProps> = ({ onCartOpen }) => {
                       <Link
                         to="/my-orders"
                         className="flex items-center space-x-2 px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50 transition-colors"
-                        onClick={() => setShowSignOut(false)}
+                        onClick={() => isMobile && setShowSignOut(false)}
                       >
                         <User size={16} />
                         <span>My Orders</span>
