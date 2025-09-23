@@ -16,41 +16,61 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) => {
   const [displayName, setDisplayName] = useState('');
   const [phone, setPhone] = useState('');
   const [loading, setLoading] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [initialLoad, setInitialLoad] = useState(true);
 
   useEffect(() => {
     if (!isOpen) return;
-    (async () => {
+    
+    const fetchProfile = async () => {
       setLoading(true);
-      const auth = await getAuthHeader();
-      const res = await fetch(`${API_BASE}/api/profile/me`, {
-        headers: { ...(auth ? { Authorization: auth } : {}) }
-      });
-      const data = await res.json();
-      if (data?.profile) {
-        setDisplayName(data.profile.display_name || '');
-        setPhone(data.profile.phone || '');
-      } else {
-        setDisplayName(user?.email?.split('@')[0] || '');
+      try {
+        const auth = await getAuthHeader();
+        const res = await fetch(`${API_BASE}/api/profile/me`, {
+          headers: { ...(auth ? { Authorization: auth } : {}) }
+        });
+        const data = await res.json();
+        if (data?.profile) {
+          setDisplayName(data.profile.display_name || '');
+          setPhone(data.profile.phone || '');
+        } else {
+          setDisplayName(user?.email?.split('@')[0] || '');
+        }
+      } catch (error) {
+        console.error('Error fetching profile:', error);
+      } finally {
+        setLoading(false);
+        setInitialLoad(false);
       }
-      setLoading(false);
-    })();
+    };
+
+    fetchProfile();
   }, [isOpen]);
 
   const handleSave = async () => {
-    setLoading(true);
-    const auth = await getAuthHeader();
-    const res = await fetch(`${API_BASE}/api/profile/me`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', ...(auth ? { Authorization: auth } : {}) },
-      body: JSON.stringify({ display_name: displayName, phone })
-    });
-    setLoading(false);
-    if (!res.ok) {
-      const d = await res.json();
-      alert(d?.error || 'Failed to save');
-      return;
+    if (isSaving) return;
+    
+    setIsSaving(true);
+    try {
+      const auth = await getAuthHeader();
+      const res = await fetch(`${API_BASE}/api/profile/me`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', ...(auth ? { Authorization: auth } : {}) },
+        body: JSON.stringify({ display_name: displayName, phone })
+      });
+
+      if (!res.ok) {
+        const d = await res.json();
+        throw new Error(d?.error || 'Failed to save profile');
+      }
+      
+      onClose();
+    } catch (error) {
+      console.error('Error saving profile:', error);
+      alert(error instanceof Error ? error.message : 'Failed to save profile');
+    } finally {
+      setIsSaving(false);
     }
-    onClose();
   };
 
   return createPortal(
@@ -73,19 +93,50 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) => {
                   </button>
                 </div>
                 <div className="p-5 space-y-4">
-                  <div>
-                    <label className="block text-sm text-slate-600 mb-1">Display Name</label>
-                    <input type="text" value={displayName} onChange={(e) => setDisplayName(e.target.value)} className="w-full border rounded-lg px-3 py-2" />
-                  </div>
-                  <div>
-                    <label className="block text-sm text-slate-600 mb-1">Phone</label>
-                    <input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} className="w-full border rounded-lg px-3 py-2" />
-                  </div>
+                  {loading && initialLoad ? (
+                    <div className="space-y-4">
+                      <div className="animate-pulse space-y-2">
+                        <div className="h-4 bg-gray-200 rounded w-1/3"></div>
+                        <div className="h-10 bg-gray-100 rounded-lg"></div>
+                      </div>
+                      <div className="animate-pulse space-y-2">
+                        <div className="h-4 bg-gray-200 rounded w-1/4"></div>
+                        <div className="h-10 bg-gray-100 rounded-lg"></div>
+                      </div>
+                    </div>
+                  ) : (
+                    <>
+                      <div>
+                        <label className="block text-sm font-medium text-slate-600 mb-1">Display Name</label>
+                        <input 
+                          type="text" 
+                          value={displayName} 
+                          onChange={(e) => setDisplayName(e.target.value)} 
+                          className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-slate-500 focus:border-transparent" 
+                          placeholder="Enter your display name"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-slate-600 mb-1">Phone</label>
+                        <input 
+                          type="tel" 
+                          value={phone} 
+                          onChange={(e) => setPhone(e.target.value)} 
+                          className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-slate-500 focus:border-transparent" 
+                          placeholder="Enter your phone number"
+                        />
+                      </div>
+                    </>
+                  )}
                 </div>
                 <div className="p-5 border-t flex justify-end gap-2">
                   <button onClick={onClose} className="px-4 py-2 rounded-lg">Cancel</button>
-                  <button onClick={handleSave} disabled={loading} className="px-4 py-2 rounded-lg bg-slate-800 text-white disabled:opacity-60">
-                    {loading ? 'Saving...' : 'Save'}
+                  <button 
+                    onClick={handleSave} 
+                    disabled={loading || isSaving} 
+                    className="px-4 py-2 rounded-lg bg-slate-800 text-white disabled:opacity-60 hover:bg-slate-700 transition-colors"
+                  >
+                    {isSaving ? 'Saving...' : 'Save'}
                   </button>
                 </div>
               </motion.div>
