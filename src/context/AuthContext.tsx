@@ -7,9 +7,21 @@ const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY as string;
 // Create a single supabase client for interacting with your database
 export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
   auth: {
-    autoRefreshToken: false, // Disable auto refresh to have more control
-    persistSession: false,  // Disable persistence to manage it manually
+    autoRefreshToken: true,
+    persistSession: true,
     detectSessionInUrl: true,
+    storage: {
+      getItem: (key: string) => {
+        const item = localStorage.getItem(key);
+        return item ? JSON.parse(item) : null;
+      },
+      setItem: (key: string, value: string) => {
+        localStorage.setItem(key, JSON.stringify(value));
+      },
+      removeItem: (key: string) => {
+        localStorage.removeItem(key);
+      },
+    },
   },
 });
 
@@ -60,10 +72,23 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => {
     // Function to update session state
     const updateSession = async () => {
+      // First try to get session from local storage
       const { data: { session } } = await supabase.auth.getSession();
       console.log('Updating session:', session);
       setSession(session);
-      setUser(session?.user ?? null);      
+      setUser(session?.user ?? null);
+      
+      // If no session but we have a token in URL (email confirmation, password reset, etc.)
+      if (!session && typeof window !== 'undefined') {
+        const hash = window.location.hash;
+        if (hash.includes('access_token') || hash.includes('error=')) {
+          const { data: { session: urlSession } } = await supabase.auth.getSession();
+          if (urlSession) {
+            setSession(urlSession);
+            setUser(urlSession.user);
+          }
+        }
+      }
     };
 
     // Get initial session
