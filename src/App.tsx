@@ -19,6 +19,7 @@ import TermsOfService from './pages/TermsOfService';
 import CookiePolicy from './pages/CookiePolicy';
 import OrderComplete from './pages/OrderComplete';
 import CheckoutPage from './pages/CheckoutPage';
+import OrdersPage from './pages/OrdersPage';
 import { Transition } from "framer-motion";
 
 // Page transition variants
@@ -89,6 +90,7 @@ const AppContent: React.FC<{ onCartOpen: () => void; isCartOpen: boolean; onCart
           <Route path="/cookie-policy" element={<PageWrapper><CookiePolicy /></PageWrapper>} />
           <Route path="/order-complete" element={<PageWrapper><OrderComplete /></PageWrapper>} />
           <Route path="/checkout" element={<PageWrapper><CheckoutPage /></PageWrapper>} />
+          <Route path="/my-orders" element={<PageWrapper><OrdersPage /></PageWrapper>} />
         </Routes>
       </AnimatePresence>
       

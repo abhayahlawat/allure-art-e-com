@@ -113,32 +113,44 @@ const Header: React.FC<HeaderProps> = ({ onCartOpen }) => {
                 
                 <AnimatePresence>
                   {showSignOut && (
-                    <motion.button
-                      onClick={async (e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        setIsSigningOut(true);
-                        try {
-                          await signOut();
-                          // The AuthContext will handle the redirect
-                        } catch (error) {
-                          console.error('Sign out error:', error);
-                          // Force redirect even if there was an error
-                          window.location.href = '/';
-                        } finally {
-                          setIsSigningOut(false);
-                        }
-                      }}
-                      className="absolute right-0 mt-2 w-32 bg-white border border-slate-200 rounded-lg shadow-lg z-50 overflow-hidden flex items-center justify-center space-x-2 py-2 text-red-600 hover:bg-red-50 transition-colors"
+                    <motion.div 
+                      className="absolute right-0 mt-2 w-48 bg-white border border-slate-200 rounded-lg shadow-lg z-50 overflow-hidden"
                       initial={{ opacity: 0, y: -10 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -10 }}
                       transition={{ duration: 0.15 }}
-                      disabled={isSigningOut}
                     >
-                      <LogOut size={16} />
-                      <span>{isSigningOut ? 'Signing out...' : 'Sign out'}</span>
-                    </motion.button>
+                      <Link
+                        to="/my-orders"
+                        className="flex items-center space-x-2 px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50 transition-colors"
+                        onClick={() => setShowSignOut(false)}
+                      >
+                        <User size={16} />
+                        <span>My Orders</span>
+                      </Link>
+                      <button
+                        onClick={async (e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          setIsSigningOut(true);
+                          try {
+                            await signOut();
+                            // The AuthContext will handle the redirect
+                          } catch (error) {
+                            console.error('Sign out error:', error);
+                            // Force redirect even if there was an error
+                            window.location.href = '/';
+                          } finally {
+                            setIsSigningOut(false);
+                          }
+                        }}
+                        className="w-full flex items-center space-x-2 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors border-t border-slate-100"
+                        disabled={isSigningOut}
+                      >
+                        <LogOut size={16} />
+                        <span>{isSigningOut ? 'Signing out...' : 'Sign out'}</span>
+                      </button>
+                    </motion.div>
                   )}
                 </AnimatePresence>
               </div>
