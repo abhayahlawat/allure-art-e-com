@@ -64,8 +64,23 @@ const CheckoutPage: React.FC = () => {
         if (!authHeader) return;
         
         const response = await fetch(getApiUrl('api/addresses'), {
-          headers: { Authorization: authHeader }
+          method: 'GET',
+          headers: { 
+            'Authorization': authHeader,
+            'Accept': 'application/json'
+          }
         });
+        
+        if (!response.ok) {
+          const errorText = await response.text();
+          console.error('Error response from server:', {
+            status: response.status,
+            statusText: response.statusText,
+            url: response.url,
+            error: errorText
+          });
+          throw new Error(`Failed to fetch addresses: ${response.status} ${response.statusText}`);
+        }
         
         if (response.ok) {
           const data = await response.json();
