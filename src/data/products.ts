@@ -5,7 +5,7 @@ export const products: Product[] = [
     id: '1',
     title: 'Ethereal Dreams',
     artist: 'Marina Celestine',
-    price: 10, // ₹8,300
+    price: 2,
     image: 'https://images.pexels.com/photos/1183992/pexels-photo-1183992.jpeg',
     description: 'A mesmerizing abstract piece that captures the essence of dreams through flowing pastels and organic forms.',
     category: 'Abstract',
