@@ -92,7 +92,7 @@ const TermsOfService: React.FC = () => {
               If you have any questions about these Terms, please contact us at:
             </p>
             <p className="text-slate-700 mt-2">
-              Email: legal@allureart.com<br />
+              Email: allureart09@gmail.com<br />
               Address: 123 Art Street, Creative District
             </p>
           </section>

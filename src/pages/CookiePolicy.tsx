@@ -81,7 +81,7 @@ const CookiePolicy: React.FC = () => {
               If you have any questions about this Cookie Policy, please contact us at:
             </p>
             <p className="text-slate-700 mt-2">
-              Email: privacy@allureart.com<br />
+              Email: allureart09@gmail.com<br />
               Address: 123 Art Street, Creative District
             </p>
           </section>

@@ -139,7 +139,7 @@ const Footer: React.FC = () => {
                 transition={{ delay: 0.8, duration: 0.6 }}
               >
                 <Phone size={16} className="text-slate-600 flex-shrink-0" />
-                <span className="text-slate-700 text-sm sm:text-base">+1 (555) 123-4567</span>
+                <span className="text-slate-700 text-sm sm:text-base">+91 8923024155</span>
               </motion.div>
               <motion.div
                 className="flex items-center space-x-3"
@@ -148,7 +148,7 @@ const Footer: React.FC = () => {
                 transition={{ delay: 0.9, duration: 0.6 }}
               >
                 <Mail size={16} className="text-slate-600 flex-shrink-0" />
-                <span className="text-slate-700 text-sm sm:text-base break-all">hello@allureart.com</span>
+                <span className="text-slate-700 text-sm sm:text-base break-all">allureart09@gmail.com</span>
               </motion.div>
             </div>
           </motion.div>
@@ -170,6 +170,9 @@ const Footer: React.FC = () => {
             </Link>
             <Link to="/terms-of-service" className="text-slate-600 text-sm hover:text-slate-800 transition-colors duration-300">
               Terms of Service
+            </Link>
+            <Link to="/cancellation-refund-policy" className="text-slate-600 text-sm hover:text-slate-800 transition-colors duration-300">
+              Cancellation & Refund
             </Link>
             <Link to="/cookie-policy" className="text-slate-600 text-sm hover:text-slate-800 transition-colors duration-300">
               Cookie Policy
