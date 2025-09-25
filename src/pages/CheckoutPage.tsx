@@ -309,15 +309,24 @@ const CheckoutPage: React.FC = () => {
               return;
             }
             const verifyData = await verifyRes.json();
-            // Navigate first, then clear cart to prevent flash
+            // Store order details in state before navigation
+            const orderCompleteState = {
+              orderId: verifyData.order.id,
+              total: totalPrice,
+              orderDetails: verifyData.order, // Include the full order details
+              items: cart // Include cart items for immediate display
+            };
+            
+            // Navigate with order details in state
             navigate('/order-complete', {
-              state: {
-                orderId: verifyData.order.id,
-                total: totalPrice,
-              },
+              state: orderCompleteState,
               replace: true // Replace the current entry in the history stack
             });
-            clearCart(); // Clear cart after navigation is complete
+            
+            // Clear cart after navigation is initiated
+            setTimeout(() => {
+              clearCart();
+            }, 0);
           } catch (err) {
             setError('Payment verification failed. Please contact support.');
             setIsLoading(false);
