@@ -268,7 +268,7 @@ const CheckoutPage: React.FC = () => {
       }
 
       const orderData = await orderResponse.json();
-      const { order, razorpayOrder, amount, currency } = orderData;
+      const { razorpayOrder, amount, currency } = orderData;
       if (!razorpayOrder || !razorpayOrder.id) throw new Error('Payment gateway order creation failed. Please try again later.');
 
       const razorpayKey = import.meta.env.VITE_RAZORPAY_KEY_ID;
@@ -372,15 +372,27 @@ const CheckoutPage: React.FC = () => {
     return (
       <div className="min-h-screen bg-gray-100">
         <Header onCartOpen={handleCartOpen} />
-        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-6">Checkout</h1>
-          <p className="mb-6 text-gray-600 text-sm sm:text-base">Please sign in to proceed to checkout.</p>
-          <button
-            onClick={() => navigate('/login', { state: { from: '/checkout' } })}
-            className="w-full sm:w-auto bg-slate-800 text-white px-6 py-2 sm:py-3 rounded-lg hover:bg-slate-900 transition-colors duration-200"
-          >
-            Sign In
-          </button>
+        <main className="min-h-[60vh] flex items-center justify-center px-4 sm:px-6 lg:px-8 pt-40 pb-8">
+          <div className="w-full max-w-md">
+            <div className="text-center">
+              <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-slate-100 mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+              </div>
+              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">Sign In Required</h1>
+              <p className="text-gray-600 mb-6 text-sm sm:text-base">Please sign in to proceed with your purchase and complete your order.</p>
+              
+              <div className="mt-6 space-y-4">
+                <button
+                  onClick={() => navigate('/login', { state: { from: '/checkout' } })}
+                  className="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-slate-800 hover:bg-slate-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-700 transition-colors duration-200"
+                >
+                  Sign In
+                </button>
+              </div>
+            </div>
+          </div>
         </main>
       </div>
     );

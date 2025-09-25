@@ -17,6 +17,7 @@ const Cart: React.FC<CartProps> = ({ isOpen, onClose }) => {
 
   const handleCheckout = async () => {
     if (!user) {
+      onClose(); // Close the cart before navigating to login
       navigate('/login', { state: { from: '/cart' } });
       return;
     }
